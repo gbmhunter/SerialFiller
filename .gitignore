@@ -1,0 +1,8 @@
+# High-churn CLion file
+.idea/workspace.xml
+
+# Standard build directory if doing manual build
+build/
+
+# Standard CLion build directory
+cmake-build-debug/
