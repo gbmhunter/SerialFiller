@@ -29,6 +29,8 @@ namespace MN {
 
         void Subscribe(std::string topic);
 
+        /// \details    Splits a incoming data stream into packets, based on the end-of-frame character.
+        void PacketizeData(std::istream& rxData, std::vector<std::vector<uint8_t>>& packets);
 
         /// \details    The encoding process cannot fail.
         static std::vector<uint8_t> CobsEncoder(
@@ -42,6 +44,8 @@ namespace MN {
         static DecodeStatus CobsDecoder(const std::vector<uint8_t> &encodedData, std::vector<uint8_t> &decodedData);
 
     private:
+
+        std::vector<uint8_t> rxBuffer;
 
 
     };

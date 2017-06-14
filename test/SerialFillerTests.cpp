@@ -99,4 +99,15 @@ namespace {
         EXPECT_EQ(std::vector<uint8_t>(), decodedData);
     }
 
+    TEST_F(FooTest, PacketizeData) {
+
+        std::istringstream iss(std::string({ 0x01, 0x02, 0x00 }));
+        std::vector<std::vector<uint8_t>> packets;
+        SerialFiller serialFiller;
+        serialFiller.PacketizeData(iss, packets);
+
+        EXPECT_EQ(1, packets.size());
+        EXPECT_EQ(std::vector<uint8_t>({ 0x01, 0x02, 0x00 }), packets[0]);
+    }
+
 }  // namespace

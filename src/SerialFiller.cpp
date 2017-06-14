@@ -82,4 +82,29 @@ namespace MN {
         return DecodeStatus::SUCCESS;
     }
 
+    void SerialFiller::PacketizeData(std::istream& rxData, std::vector<std::vector<uint8_t>> &packets) {
+
+        char byteOfData;
+
+        // Extract all bytes from istream
+        while(rxData.get(byteOfData)) {
+
+            rxBuffer.push_back((uint8_t) byteOfData);
+
+            // Look for 0x00 byte in data
+            if (byteOfData == 0x00) {
+                // Found end-of-packet!
+
+                // Move everything from the start to byteOfData from rxData
+                // into a new packet
+                std::vector<uint8_t> packet;
+                for (auto it = rxBuffer.begin(); it != rxBuffer.end(); it++) {
+                    packet.push_back(*it);
+                }
+                rxData.clear();
+                packets.push_back(packet);
+            }
+        }
+    }
+
 }
