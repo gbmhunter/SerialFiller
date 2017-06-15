@@ -22,7 +22,7 @@ namespace {
         SerialFiller serialFiller;
 
         std::string savedTxData;
-        serialFiller.callback = [&](std::string txData) -> void {
+        serialFiller.txDataReady_ = [&](std::string txData) -> void {
             savedTxData = txData;
         };
 

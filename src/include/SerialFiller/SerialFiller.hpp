@@ -27,7 +27,7 @@ namespace MN {
 
         void HandleRxDataReceived(std::string rxData);
 
-        static void DecodePacket(const std::string packet, std::string& topic, std::string& data);
+        static void SplitPacket(const std::string &packet, std::string &topic, std::string &data);
 
         /// \details    Splits a incoming data stream into packets, based on the end-of-frame character.
         static void PacketizeData(std::string& newRxData,
@@ -44,13 +44,15 @@ namespace MN {
         ///             #decodedData is emptied of any pre-existing data. If the decode fails, decodedData is left empty.
         static DecodeStatus CobsDecoder(const std::string &encodedData, std::string &decodedData);
 
-        std::function<void(std::string)> callback;
+        std::function<void(std::string)> txDataReady_;
 
     private:
 
         std::string rxBuffer;
 
-        std::multimap<std::string, std::function<void(std::string)>> topicCallbacks;
+        typedef std::multimap<std::string, std::function<void(std::string)>> TopicCallback;
+        typedef std::pair<TopicCallback::iterator, TopicCallback::iterator> RangeType;
+        TopicCallback topicCallbacks;
 
     };
 

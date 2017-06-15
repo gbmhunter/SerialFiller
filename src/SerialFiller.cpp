@@ -22,7 +22,7 @@ namespace MN {
         CobsEncoder(rawData, encodedData);
 
         // Emit TX send event
-        callback(encodedData);
+        txDataReady_(encodedData);
     };
 
     void SerialFiller::Subscribe(std::string topic, std::function<void(std::string)> callback) {
@@ -144,12 +144,30 @@ namespace MN {
         SerialFiller::PacketizeData(rxData, rxBuffer, packets);
 
         for(auto it = packets.begin(); it != packets.end(); it++) {
-//            SerialFiller::DecodePacket()
+            std::string topic;
+            std::string data;
+
+            // Firstly, remove COBS encoding
+            std::string decodedData;
+            SerialFiller::CobsDecoder(*it, decodedData);
+
+            // Then split packet into topic and data
+            SerialFiller::SplitPacket(decodedData, topic, data);
+
+            // Call every callback associated with this topic
+//            auto keyRange = topicCallbacks.equal_range(topic);
+//            std::pair<TopicCallback::iterator, TopicCallback::iterator> range;
+            RangeType range = topicCallbacks.equal_range(topic);
+            for(TopicCallback::iterator rangeIt = range.first;  rangeIt != range.second;  ++rangeIt) {
+//                std::cout << "    value = " << keyIt->second << std::endl;
+                rangeIt->second(data);
+            }
+
         }
 
     }
 
-    void SerialFiller::DecodePacket(const std::string packet, std::string& topic, std::string& data) {
+    void SerialFiller::SplitPacket(const std::string &packet, std::string &topic, std::string &data) {
 
         // Find ":", this indicates the end of the topic name and the
         // start of the data

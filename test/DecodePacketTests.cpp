@@ -21,7 +21,7 @@ namespace {
         auto packet = std::string("test-topic:hello");
         auto topic = std::string("");
         auto data = std::string("");
-        SerialFiller::DecodePacket(packet, topic, data);
+        SerialFiller::SplitPacket(packet, topic, data);
         EXPECT_EQ("test-topic", topic);
         EXPECT_EQ("hello", data);
     }
