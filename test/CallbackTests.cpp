@@ -21,8 +21,8 @@ namespace {
 
         SerialFiller serialFiller;
 
-        std::vector<uint8_t> savedTxData;
-        serialFiller.callback = [&](std::vector<uint8_t> txData) -> void {
+        std::string savedTxData;
+        serialFiller.callback = [&](std::string txData) -> void {
             savedTxData = txData;
         };
 

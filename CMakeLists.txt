@@ -1,6 +1,10 @@
 cmake_minimum_required (VERSION 2.8.11)
 project (SerialFiller)
 
+# Protobuf is required to create the C++ source code that
+# describes the messages from the .proto files
+# (and also provides serialization functions
+# for these messages)
 find_package(Protobuf REQUIRED)
 
 # Download and unpack googletest at configure time
@@ -30,7 +34,8 @@ endif()
  
 # Now simply link your own targets against gtest, gmock,
 # etc. as appropriate
-include_directories(${gtest_SOURCE_DIR}/include)
+
+#include_directories(${gtest_SOURCE_DIR}/include)
 include_directories(src/include)
 
 add_subdirectory(src)

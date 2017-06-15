@@ -13,12 +13,12 @@ namespace MN {
         std::cout << "packet = " << packet << std::endl;
 
         // Convert to raw packet
-        std::vector<uint8_t> rawData;
+        std::string rawData;
         for (int i = 0; i < packet.size(); i++) {
             rawData.push_back((uint8_t) packet[i]);
         }
 
-        std::vector<uint8_t> encodedData;
+        std::string encodedData;
         CobsEncoder(rawData, encodedData);
 
         // Emit TX send event
@@ -33,8 +33,8 @@ namespace MN {
     }
 
     void SerialFiller::CobsEncoder(
-            const std::vector<uint8_t> &rawData,
-            std::vector<uint8_t> &encodedData) {
+            const std::string &rawData,
+            std::string &encodedData) {
 
         int startOfCurrBlock = 0;
         uint8_t numElementsInCurrBlock = 0;
@@ -76,8 +76,8 @@ namespace MN {
 
     SerialFiller::DecodeStatus
     SerialFiller::CobsDecoder(
-            const std::vector<uint8_t> &encodedData,
-            std::vector<uint8_t> &decodedData) {
+            const std::string &encodedData,
+            std::string &decodedData) {
 
         decodedData.clear();
 
@@ -112,9 +112,9 @@ namespace MN {
     }
 
     void SerialFiller::PacketizeData(
-            std::vector<uint8_t> &newRxData,
-            std::vector<uint8_t> &existingRxData,
-            std::vector<std::vector<uint8_t>> &packets) {
+            std::string &newRxData,
+            std::string &existingRxData,
+            std::vector<std::string> &packets) {
 
         // Extract all bytes from istream
         for (auto it = newRxData.begin(); it != newRxData.end(); it++) {
@@ -128,7 +128,7 @@ namespace MN {
 
                 // Move everything from the start to byteOfData from rxData
                 // into a new packet
-                std::vector<uint8_t> packet;
+                std::string packet;
                 for (auto it = existingRxData.begin(); it != existingRxData.end(); it++) {
                     packet.push_back(*it);
                 }
@@ -138,11 +138,14 @@ namespace MN {
         }
     }
 
-    void SerialFiller::HandleRxDataReceived(std::vector<uint8_t> rxData) {
+    void SerialFiller::HandleRxDataReceived(std::string rxData) {
 
-        std::vector<std::vector<uint8_t>> packets;
+        std::vector<std::string> packets;
         SerialFiller::PacketizeData(rxData, rxBuffer, packets);
 
+        for(auto it = packets.begin(); it != packets.end(); it++) {
+//            SerialFiller::DecodePacket()
+        }
 
     }
 

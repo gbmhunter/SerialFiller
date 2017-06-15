@@ -25,30 +25,30 @@ namespace MN {
 
         void Subscribe(std::string topic, std::function<void(std::string)> callback);
 
-        void HandleRxDataReceived(std::vector<uint8_t> rxData);
+        void HandleRxDataReceived(std::string rxData);
 
         static void DecodePacket(const std::string packet, std::string& topic, std::string& data);
 
         /// \details    Splits a incoming data stream into packets, based on the end-of-frame character.
-        static void PacketizeData(std::vector<uint8_t>& newRxData,
-                           std::vector<uint8_t>& existingRxData, std::vector<std::vector<uint8_t>>& packets);
+        static void PacketizeData(std::string& newRxData,
+                           std::string& existingRxData, std::vector<std::string>& packets);
 
         /// \details    The encoding process cannot fail.
         static void CobsEncoder(
-                const std::vector<uint8_t> &rawData,
-                std::vector<uint8_t> &encodedData);
+                const std::string &rawData,
+                std::string &encodedData);
 
         /// \brief      Decode data using "Consistent Overhead Byte Stuffing" (COBS).
         /// \details    Provided encodedData is expected to be a single, valid COBS encoded packet. If not, method
         ///             will return #DecodeStatus::ERROR_ZERO_BYTE_NOT_EXPECTED.
         ///             #decodedData is emptied of any pre-existing data. If the decode fails, decodedData is left empty.
-        static DecodeStatus CobsDecoder(const std::vector<uint8_t> &encodedData, std::vector<uint8_t> &decodedData);
+        static DecodeStatus CobsDecoder(const std::string &encodedData, std::string &decodedData);
 
-        std::function<void(std::vector<uint8_t>)> callback;
+        std::function<void(std::string)> callback;
 
     private:
 
-        std::vector<uint8_t> rxBuffer;
+        std::string rxBuffer;
 
         std::multimap<std::string, std::function<void(std::string)>> topicCallbacks;
 
