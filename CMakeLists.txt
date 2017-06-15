@@ -5,7 +5,7 @@ project (SerialFiller)
 # describes the messages from the .proto files
 # (and also provides serialization functions
 # for these messages)
-find_package(Protobuf REQUIRED)
+#find_package(Protobuf REQUIRED)
 
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
