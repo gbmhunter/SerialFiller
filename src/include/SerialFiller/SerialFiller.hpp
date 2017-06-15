@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <functional>
 #include <iostream>
+#include <map>
 #include <vector>
 
 namespace MN {
@@ -22,10 +23,15 @@ namespace MN {
 
         void Publish(std::string topic, std::string message);
 
-        void Subscribe(std::string topic);
+        void Subscribe(std::string topic, std::function<void(std::string)> callback);
+
+        void HandleRxDataReceived(std::vector<uint8_t> rxData);
+
+        static void DecodePacket(const std::string packet, std::string& topic, std::string& data);
 
         /// \details    Splits a incoming data stream into packets, based on the end-of-frame character.
-        void PacketizeData(std::vector<uint8_t>& newRxData, std::vector<std::vector<uint8_t>>& packets);
+        static void PacketizeData(std::vector<uint8_t>& newRxData,
+                           std::vector<uint8_t>& existingRxData, std::vector<std::vector<uint8_t>>& packets);
 
         /// \details    The encoding process cannot fail.
         static void CobsEncoder(
@@ -44,6 +50,7 @@ namespace MN {
 
         std::vector<uint8_t> rxBuffer;
 
+        std::multimap<std::string, std::function<void(std::string)>> topicCallbacks;
 
     };
 

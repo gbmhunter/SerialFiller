@@ -14,8 +14,8 @@ namespace MN {
 
         // Convert to raw packet
         std::vector<uint8_t> rawData;
-        for(int i = 0; i < packet.size(); i++) {
-            rawData.push_back((uint8_t)packet[i]);
+        for (int i = 0; i < packet.size(); i++) {
+            rawData.push_back((uint8_t) packet[i]);
         }
 
         std::vector<uint8_t> encodedData;
@@ -24,6 +24,13 @@ namespace MN {
         // Emit TX send event
         callback(encodedData);
     };
+
+    void SerialFiller::Subscribe(std::string topic, std::function<void(std::string)> callback) {
+
+        // Save subscription
+        topicCallbacks.insert({topic, callback});
+
+    }
 
     void SerialFiller::CobsEncoder(
             const std::vector<uint8_t> &rawData,
@@ -68,7 +75,9 @@ namespace MN {
 
 
     SerialFiller::DecodeStatus
-    SerialFiller::CobsDecoder(const std::vector<uint8_t> &encodedData, std::vector<uint8_t> &decodedData) {
+    SerialFiller::CobsDecoder(
+            const std::vector<uint8_t> &encodedData,
+            std::vector<uint8_t> &decodedData) {
 
         decodedData.clear();
 
@@ -102,13 +111,16 @@ namespace MN {
         return DecodeStatus::SUCCESS;
     }
 
-    void SerialFiller::PacketizeData(std::vector<uint8_t>& newRxData, std::vector<std::vector<uint8_t>> &packets) {
+    void SerialFiller::PacketizeData(
+            std::vector<uint8_t> &newRxData,
+            std::vector<uint8_t> &existingRxData,
+            std::vector<std::vector<uint8_t>> &packets) {
 
         // Extract all bytes from istream
-        for(auto it = newRxData.begin(); it != newRxData.end(); it++) {
+        for (auto it = newRxData.begin(); it != newRxData.end(); it++) {
 
             char byteOfData = *it;
-            rxBuffer.push_back((uint8_t) byteOfData);
+            existingRxData.push_back((uint8_t) byteOfData);
 
             // Look for 0x00 byte in data
             if (byteOfData == 0x00) {
@@ -117,13 +129,38 @@ namespace MN {
                 // Move everything from the start to byteOfData from rxData
                 // into a new packet
                 std::vector<uint8_t> packet;
-                for (auto it = rxBuffer.begin(); it != rxBuffer.end(); it++) {
+                for (auto it = existingRxData.begin(); it != existingRxData.end(); it++) {
                     packet.push_back(*it);
                 }
-                rxBuffer.clear();
+                existingRxData.clear();
                 packets.push_back(packet);
             }
         }
+    }
+
+    void SerialFiller::HandleRxDataReceived(std::vector<uint8_t> rxData) {
+
+        std::vector<std::vector<uint8_t>> packets;
+        SerialFiller::PacketizeData(rxData, rxBuffer, packets);
+
+
+    }
+
+    void SerialFiller::DecodePacket(const std::string packet, std::string& topic, std::string& data) {
+
+        // Find ":", this indicates the end of the topic name and the
+        // start of the data
+        std::size_t colonPos = packet.find(":");
+        if (colonPos == std::string::npos) {
+            throw std::runtime_error("Packet ill-formed. ':' could not be found in packet data.");
+        } else {
+            topic = packet.substr(0, colonPos);
+            std::cout << "topic = " << topic << std::endl;
+
+            data = packet.substr(colonPos + 1, packet.size());
+            std::cout << "data = " << data << std::endl;
+        }
+
     }
 
 }

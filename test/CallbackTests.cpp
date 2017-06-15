@@ -29,6 +29,9 @@ namespace {
         serialFiller.Publish("test-topic", "hello");
 
         EXPECT_NE(0, savedTxData.size());
+
+
+
     }
 
 }  // namespace
