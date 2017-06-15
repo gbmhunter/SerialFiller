@@ -1,6 +1,10 @@
 
+file(GLOB_RECURSE serial-filler-tests_SRC
+        "*.cpp"
+        "*.hpp"
+        )
 
-add_executable (serial-filler-tests main.cpp SerialFillerTests.cpp)
+add_executable (serial-filler-tests ${serial-filler-tests_SRC})
 
 
 target_link_libraries (serial-filler-tests LINK_PUBLIC serial-filler gtest)

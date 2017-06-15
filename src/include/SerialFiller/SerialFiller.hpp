@@ -1,5 +1,6 @@
 
 #include <cstdint>
+#include <functional>
 #include <iostream>
 #include <vector>
 
@@ -19,21 +20,15 @@ namespace MN {
             ERROR_ZERO_BYTE_NOT_EXPECTED
         };
 
-        void Publish(std::string topic, std::string message) {
-
-            std::string packet = "";
-            packet += topic;
-
-            std::cout << "packet = " << packet << std::endl;
-        };
+        void Publish(std::string topic, std::string message);
 
         void Subscribe(std::string topic);
 
         /// \details    Splits a incoming data stream into packets, based on the end-of-frame character.
-        void PacketizeData(std::istream& rxData, std::vector<std::vector<uint8_t>>& packets);
+        void PacketizeData(std::vector<uint8_t>& newRxData, std::vector<std::vector<uint8_t>>& packets);
 
         /// \details    The encoding process cannot fail.
-        static std::vector<uint8_t> CobsEncoder(
+        static void CobsEncoder(
                 const std::vector<uint8_t> &rawData,
                 std::vector<uint8_t> &encodedData);
 
@@ -42,6 +37,8 @@ namespace MN {
         ///             will return #DecodeStatus::ERROR_ZERO_BYTE_NOT_EXPECTED.
         ///             #decodedData is emptied of any pre-existing data. If the decode fails, decodedData is left empty.
         static DecodeStatus CobsDecoder(const std::vector<uint8_t> &encodedData, std::vector<uint8_t> &decodedData);
+
+        std::function<void(std::vector<uint8_t>)> callback;
 
     private:
 

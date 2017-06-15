@@ -3,7 +3,29 @@
 
 namespace MN {
 
-    std::vector<uint8_t> SerialFiller::CobsEncoder(
+    void SerialFiller::Publish(std::string topic, std::string message) {
+
+        std::string packet = "";
+        packet += topic;
+        packet += ":";
+        packet += message;
+
+        std::cout << "packet = " << packet << std::endl;
+
+        // Convert to raw packet
+        std::vector<uint8_t> rawData;
+        for(int i = 0; i < packet.size(); i++) {
+            rawData.push_back((uint8_t)packet[i]);
+        }
+
+        std::vector<uint8_t> encodedData;
+        CobsEncoder(rawData, encodedData);
+
+        // Emit TX send event
+        callback(encodedData);
+    };
+
+    void SerialFiller::CobsEncoder(
             const std::vector<uint8_t> &rawData,
             std::vector<uint8_t> &encodedData) {
 
@@ -42,8 +64,6 @@ namespace MN {
         // Insert pointer to the terminating 0x00 character
         encodedData[startOfCurrBlock] = numElementsInCurrBlock + 1;
         encodedData.push_back(0x00);
-
-        return encodedData;
     }
 
 
@@ -82,13 +102,12 @@ namespace MN {
         return DecodeStatus::SUCCESS;
     }
 
-    void SerialFiller::PacketizeData(std::istream& rxData, std::vector<std::vector<uint8_t>> &packets) {
-
-        char byteOfData;
+    void SerialFiller::PacketizeData(std::vector<uint8_t>& newRxData, std::vector<std::vector<uint8_t>> &packets) {
 
         // Extract all bytes from istream
-        while(rxData.get(byteOfData)) {
+        for(auto it = newRxData.begin(); it != newRxData.end(); it++) {
 
+            char byteOfData = *it;
             rxBuffer.push_back((uint8_t) byteOfData);
 
             // Look for 0x00 byte in data
@@ -101,7 +120,7 @@ namespace MN {
                 for (auto it = rxBuffer.begin(); it != rxBuffer.end(); it++) {
                     packet.push_back(*it);
                 }
-                rxData.clear();
+                rxBuffer.clear();
                 packets.push_back(packet);
             }
         }
