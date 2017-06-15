@@ -7,6 +7,7 @@ project (SerialFiller)
 # for these messages)
 #find_package(Protobuf REQUIRED)
 
+
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
 execute_process(COMMAND "${CMAKE_COMMAND}" -G "${CMAKE_GENERATOR}" .
@@ -21,8 +22,10 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 # Add googletest directly to our build. This adds
 # the following targets: gtest, gtest_main, gmock
 # and gmock_main
+# EXCLUDE_FROM_ALL prevents gtest and gmock from being installed
+# when make install is called
 add_subdirectory("${CMAKE_BINARY_DIR}/googletest-src"
-                 "${CMAKE_BINARY_DIR}/googletest-build")
+                 "${CMAKE_BINARY_DIR}/googletest-build" EXCLUDE_FROM_ALL)
  
 # The gtest/gmock targets carry header search path
 # dependencies automatically when using CMake 2.8.11 or
