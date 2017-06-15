@@ -2,7 +2,7 @@
 
 #include "SerialFiller/SerialFiller.hpp"
 
-using namespace MN;
+using namespace mn;
 
 namespace {
 
