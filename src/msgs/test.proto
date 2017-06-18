@@ -1,8 +1,0 @@
-syntax = "proto3";
-
-package tutorial;
-
-message TestMsg {
-  required string testString = 1;
-  required int32 testInt = 2;
-}

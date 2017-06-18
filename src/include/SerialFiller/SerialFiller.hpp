@@ -32,7 +32,7 @@ namespace mn {
     class SerialFiller {
     public:
 
-        void Publish(std::string topic, ByteArray message);
+        void Publish(std::string topic, ByteArray data);
 
         void Subscribe(std::string topic, std::function<void(ByteArray)> callback);
 

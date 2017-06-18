@@ -5,13 +5,13 @@
 
 namespace mn {
 
-    void SerialFiller::Publish(std::string topic, ByteArray message) {
+    void SerialFiller::Publish(std::string topic, ByteArray data) {
 
         ByteArray packet;
         std::copy(topic.begin(), topic.end(), std::back_inserter(packet));
 
         packet.push_back(':');
-        std::copy(message.begin(), message.end(), std::back_inserter(packet));
+        std::copy(data.begin(), data.end(), std::back_inserter(packet));
 
         // Add CRC
         AddCrc(packet);
