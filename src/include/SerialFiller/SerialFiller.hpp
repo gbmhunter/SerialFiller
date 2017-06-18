@@ -44,6 +44,11 @@ namespace mn {
         static void PacketizeData(ByteArray& newRxData,
                            ByteArray& existingRxData, std::vector<ByteArray>& packets);
 
+
+        static void AddCrc(ByteArray& packet);
+
+        /// \param  packet  Packet must be COBS decoded before passing into here. Expects
+        ///                 last two bytes to be the CRC value of all the bytes proceeding it.
         static bool VerifyCrc(const ByteArray& packet);
 
         std::function<void(ByteArray)> txDataReady_;

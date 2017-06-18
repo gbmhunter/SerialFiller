@@ -16,8 +16,22 @@ namespace {
         }
     };
 
-    TEST_F(AddAndVerifyCrcTests, StandardCheckTest) {
-        EXPECT_EQ(true, SerialFiller::VerifyCrc(ByteArray({ 0x01, 0x02, 0x03, 0xAD, 0xAD })));
+    TEST_F(AddAndVerifyCrcTests, BasicTest) {
+        ByteArray packet({ 0x01, 0x02, 0x03});
+        SerialFiller::AddCrc(packet);
+        EXPECT_EQ(ByteArray({ 0x01, 0x02, 0x03, 0xAD, 0xAD }), packet);
+        EXPECT_EQ(true, SerialFiller::VerifyCrc(packet));
+    }
+
+    TEST_F(AddAndVerifyCrcTests, StandardCrcValTest) {
+        ByteArray packet({ '1', '2', '3', '4', '5', '6', '7', '8', '9'});
+        SerialFiller::AddCrc(packet);
+        EXPECT_EQ(ByteArray({ '1', '2', '3', '4', '5', '6', '7', '8', '9', 0x29, 0xB1 }), packet);
+        EXPECT_EQ(true, SerialFiller::VerifyCrc(packet));
+    }
+
+    TEST_F(AddAndVerifyCrcTests, BadCrcTest) {
+        EXPECT_EQ(false, SerialFiller::VerifyCrc(ByteArray({ 0x01, 0x02, 0x03, 0xAD, 0xAE })));
     }
 
 }  // namespace

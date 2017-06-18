@@ -1,4 +1,5 @@
 
+// User includes
 #include "SerialFiller/SerialFiller.hpp"
 #include "SerialFiller/Crc16CCitt1021.hpp"
 
@@ -11,14 +12,6 @@ namespace mn {
 
         packet.push_back(':');
         std::copy(message.begin(), message.end(), std::back_inserter(packet));
-
-//        std::cout << "packet = " << packet << std::endl;
-
-        // Convert to raw packet
-//        ByteArray rawData;
-//        for (int i = 0; i < packet.size(); i++) {
-//            rawData.push_back((uint8_t) packet[i]);
-//        }
 
         ByteArray encodedData;
         CobsTranscoder::Encode(packet, encodedData);
@@ -60,6 +53,16 @@ namespace mn {
                 packets.push_back(packet);
             }
         }
+    }
+
+    void SerialFiller::AddCrc(ByteArray &packet) {
+
+        uint16_t crcVal = Crc16CCitt1021::Calc(packet);
+
+        // Add CRC value to end of packet, MSB of CRC
+        // comes first
+        packet.push_back((uint8_t)(crcVal >> 8));
+        packet.push_back((uint8_t)(crcVal));
     }
 
     bool SerialFiller::VerifyCrc(const ByteArray& packet) {
@@ -132,5 +135,7 @@ namespace mn {
 
 
     }
+
+
 
 }
