@@ -1,5 +1,6 @@
 
 #include "SerialFiller/SerialFiller.hpp"
+#include "SerialFiller/Crc16CCitt1021.hpp"
 
 namespace mn {
 
@@ -60,6 +61,22 @@ namespace mn {
         }
     }
 
+    bool SerialFiller::VerifyCrc(const std::string& packet) {
+
+        // Create a string of the packet without the CRC
+        std::string packetWithoutCrc = packet.substr(0, packet.size() - 2);
+
+        // Extract the sent CRC value
+        std::string sentCrcString = packet.substr(packet.size() - 2, packet.size());
+        uint16_t sentCrcVal = ((uint16_t)(uint8_t)sentCrcString[0] << 8) | ((uint16_t)(uint8_t)sentCrcString[1]);
+
+        // Calculate CRC
+        uint16_t calcCrcVal = Crc16CCitt1021::Calc(packetWithoutCrc);
+
+        return sentCrcVal == calcCrcVal;
+
+    }
+
     void SerialFiller::HandleRxDataReceived(std::string rxData) {
 
         std::vector<std::string> packets;
@@ -69,9 +86,13 @@ namespace mn {
             std::string topic;
             std::string data;
 
-            // Firstly, remove COBS encoding
+            // FOR EACH PACKET:
+            // 1. Remove COBS encoding
             std::string decodedData;
             CobsTranscoder::Decode(*it, decodedData);
+
+            // 2. Verify CRC
+
 
             // Then split packet into topic and data
             SerialFiller::SplitPacket(decodedData, topic, data);

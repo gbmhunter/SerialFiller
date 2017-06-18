@@ -35,6 +35,8 @@ namespace mn {
         static void PacketizeData(std::string& newRxData,
                            std::string& existingRxData, std::vector<std::string>& packets);
 
+        static bool VerifyCrc(const std::string& packet);
+
         std::function<void(std::string)> txDataReady_;
 
     private:
