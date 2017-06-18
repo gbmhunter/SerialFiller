@@ -7,7 +7,7 @@
 namespace mn {
 
 
-    uint16_t Crc16CCitt1021::Calc(std::string data) {
+    uint16_t Crc16CCitt1021::Calc(ByteArray data) {
         uint8_t x;
         uint16_t crc = 0xFFFF;
 

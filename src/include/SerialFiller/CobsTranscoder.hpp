@@ -5,6 +5,9 @@
 // System includes
 #include <string>
 
+// User includes
+#include "SerialFiller/SerialFiller.hpp"
+
 namespace mn {
 
     class CobsTranscoder {
@@ -18,14 +21,14 @@ namespace mn {
 
         /// \details    The encoding process cannot fail.
         static void Encode(
-                const std::string &rawData,
-                std::string &encodedData);
+                const mn::ByteArray &rawData,
+                ByteArray &encodedData);
 
         /// \brief      Decode data using "Consistent Overhead Byte Stuffing" (COBS).
         /// \details    Provided encodedData is expected to be a single, valid COBS encoded packet. If not, method
         ///             will return #DecodeStatus::ERROR_ZERO_BYTE_NOT_EXPECTED.
         ///             #decodedData is emptied of any pre-existing data. If the decode fails, decodedData is left empty.
-        static DecodeStatus Decode(const std::string &encodedData, std::string &decodedData);
+        static DecodeStatus Decode(const ByteArray &encodedData, ByteArray &decodedData);
 
     };
 }

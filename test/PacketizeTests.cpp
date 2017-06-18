@@ -18,27 +18,27 @@ namespace {
 
     TEST_F(PacketizeTest, PacketizeData) {
 
-        auto newRxData = std::string({ 0x01, 0x02, 0x00 });
-        auto existingRxData = std::string();
-        std::vector<std::string> packets;
+        auto newRxData = ByteArray({ 0x01, 0x02, 0x00 });
+        auto existingRxData = ByteArray();
+        std::vector<ByteArray> packets;
         SerialFiller serialFiller;
         serialFiller.PacketizeData(newRxData, existingRxData, packets);
 
         EXPECT_EQ(1, packets.size());
-        EXPECT_EQ(std::string({ 0x01, 0x02, 0x00 }), packets[0]);
+        EXPECT_EQ(ByteArray({ 0x01, 0x02, 0x00 }), packets[0]);
     }
 
     TEST_F(PacketizeTest, PacketizeData2) {
 
-        auto newRxData = std::string({ 0x01, 0x02, 0x00, 0x01, 0x00 });
-        auto existingRxData = std::string();
-        std::vector<std::string> packets;
+        auto newRxData = ByteArray({ 0x01, 0x02, 0x00, 0x01, 0x00 });
+        auto existingRxData = ByteArray();
+        std::vector<ByteArray> packets;
         SerialFiller serialFiller;
         serialFiller.PacketizeData(newRxData, existingRxData, packets);
 
         EXPECT_EQ(2, packets.size());
-        EXPECT_EQ(std::string({ 0x01, 0x02, 0x00 }), packets[0]);
-        EXPECT_EQ(std::string({ 0x01, 0x00 }), packets[1]);
+        EXPECT_EQ(ByteArray({ 0x01, 0x02, 0x00 }), packets[0]);
+        EXPECT_EQ(ByteArray({ 0x01, 0x00 }), packets[1]);
     }
 
 }  // namespace

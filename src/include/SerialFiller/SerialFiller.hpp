@@ -2,17 +2,26 @@
 #ifndef SERIAL_FILLER_SERIAL_FILLER_H_
 #define SERIAL_FILLER_SERIAL_FILLER_H_
 
+
+
+// System includes
 #include <cstdint>
 #include <functional>
 #include <iostream>
 #include <map>
 #include <vector>
 
+// Forward declarations
+namespace mn {
+    using ByteArray = std::vector<uint8_t>;
+}
+
 #include "SerialFiller/CobsTranscoder.hpp"
 
 
 
 namespace mn {
+
 
 
     ///
@@ -23,27 +32,27 @@ namespace mn {
     class SerialFiller {
     public:
 
-        void Publish(std::string topic, std::string message);
+        void Publish(std::string topic, ByteArray message);
 
-        void Subscribe(std::string topic, std::function<void(std::string)> callback);
+        void Subscribe(std::string topic, std::function<void(ByteArray)> callback);
 
-        void HandleRxDataReceived(std::string rxData);
+        void HandleRxDataReceived(ByteArray rxData);
 
-        static void SplitPacket(const std::string &packet, std::string &topic, std::string &data);
+        static void SplitPacket(const ByteArray &packet, std::string &topic, ByteArray &data);
 
         /// \details    Splits a incoming data stream into packets, based on the end-of-frame character.
-        static void PacketizeData(std::string& newRxData,
-                           std::string& existingRxData, std::vector<std::string>& packets);
+        static void PacketizeData(ByteArray& newRxData,
+                           ByteArray& existingRxData, std::vector<ByteArray>& packets);
 
-        static bool VerifyCrc(const std::string& packet);
+        static bool VerifyCrc(const ByteArray& packet);
 
-        std::function<void(std::string)> txDataReady_;
+        std::function<void(ByteArray)> txDataReady_;
 
     private:
 
-        std::string rxBuffer;
+        ByteArray rxBuffer;
 
-        typedef std::multimap<std::string, std::function<void(std::string)>> TopicCallback;
+        typedef std::multimap<std::string, std::function<void(ByteArray)>> TopicCallback;
         typedef std::pair<TopicCallback::iterator, TopicCallback::iterator> RangeType;
         TopicCallback topicCallbacks;
 

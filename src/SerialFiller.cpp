@@ -4,29 +4,30 @@
 
 namespace mn {
 
-    void SerialFiller::Publish(std::string topic, std::string message) {
+    void SerialFiller::Publish(std::string topic, ByteArray message) {
 
-        std::string packet = "";
-        packet += topic;
-        packet += ":";
-        packet += message;
+        ByteArray packet;
+        std::copy(topic.begin(), topic.end(), std::back_inserter(packet));
 
-        std::cout << "packet = " << packet << std::endl;
+        packet.push_back(':');
+        std::copy(message.begin(), message.end(), std::back_inserter(packet));
+
+//        std::cout << "packet = " << packet << std::endl;
 
         // Convert to raw packet
-        std::string rawData;
-        for (int i = 0; i < packet.size(); i++) {
-            rawData.push_back((uint8_t) packet[i]);
-        }
+//        ByteArray rawData;
+//        for (int i = 0; i < packet.size(); i++) {
+//            rawData.push_back((uint8_t) packet[i]);
+//        }
 
-        std::string encodedData;
-        CobsTranscoder::Encode(rawData, encodedData);
+        ByteArray encodedData;
+        CobsTranscoder::Encode(packet, encodedData);
 
         // Emit TX send event
         txDataReady_(encodedData);
     };
 
-    void SerialFiller::Subscribe(std::string topic, std::function<void(std::string)> callback) {
+    void SerialFiller::Subscribe(std::string topic, std::function<void(ByteArray)> callback) {
 
         // Save subscription
         topicCallbacks.insert({topic, callback});
@@ -35,9 +36,9 @@ namespace mn {
 
 
     void SerialFiller::PacketizeData(
-            std::string &newRxData,
-            std::string &existingRxData,
-            std::vector<std::string> &packets) {
+            ByteArray &newRxData,
+            ByteArray &existingRxData,
+            std::vector<ByteArray> &packets) {
 
         // Extract all bytes from istream
         for (auto it = newRxData.begin(); it != newRxData.end(); it++) {
@@ -51,7 +52,7 @@ namespace mn {
 
                 // Move everything from the start to byteOfData from rxData
                 // into a new packet
-                std::string packet;
+                ByteArray packet;
                 for (auto it = existingRxData.begin(); it != existingRxData.end(); it++) {
                     packet.push_back(*it);
                 }
@@ -61,13 +62,13 @@ namespace mn {
         }
     }
 
-    bool SerialFiller::VerifyCrc(const std::string& packet) {
+    bool SerialFiller::VerifyCrc(const ByteArray& packet) {
 
         // Create a string of the packet without the CRC
-        std::string packetWithoutCrc = packet.substr(0, packet.size() - 2);
+        ByteArray packetWithoutCrc(packet.begin(), packet.end() - 2);
 
         // Extract the sent CRC value
-        std::string sentCrcString = packet.substr(packet.size() - 2, packet.size());
+        ByteArray sentCrcString(packet.end() - 2, packet.end());
         uint16_t sentCrcVal = ((uint16_t)(uint8_t)sentCrcString[0] << 8) | ((uint16_t)(uint8_t)sentCrcString[1]);
 
         // Calculate CRC
@@ -77,18 +78,18 @@ namespace mn {
 
     }
 
-    void SerialFiller::HandleRxDataReceived(std::string rxData) {
+    void SerialFiller::HandleRxDataReceived(ByteArray rxData) {
 
-        std::vector<std::string> packets;
+        std::vector<ByteArray> packets;
         SerialFiller::PacketizeData(rxData, rxBuffer, packets);
 
         for(auto it = packets.begin(); it != packets.end(); it++) {
             std::string topic;
-            std::string data;
+            ByteArray data;
 
             // FOR EACH PACKET:
             // 1. Remove COBS encoding
-            std::string decodedData;
+            ByteArray decodedData;
             CobsTranscoder::Decode(*it, decodedData);
 
             // 2. Verify CRC
@@ -110,20 +111,25 @@ namespace mn {
 
     }
 
-    void SerialFiller::SplitPacket(const std::string &packet, std::string &topic, std::string &data) {
+    void SerialFiller::SplitPacket(const ByteArray &packet, std::string &topic, ByteArray &data) {
 
         // Find ":", this indicates the end of the topic name and the
         // start of the data
-        std::size_t colonPos = packet.find(":");
-        if (colonPos == std::string::npos) {
-            throw std::runtime_error("Packet ill-formed. ':' could not be found in packet data.");
-        } else {
-            topic = packet.substr(0, colonPos);
-            std::cout << "topic = " << topic << std::endl;
-
-            data = packet.substr(colonPos + 1, packet.size());
-            std::cout << "data = " << data << std::endl;
+        bool foundTopicToDataSeparator = false;
+        for(auto it = packet.begin(); it != packet.end(); ++it) {
+            // Look for the first ":"
+            if(*it == ':') {
+                topic = std::string(packet.begin(), it);
+                data = ByteArray(it + 1, packet.end());
+                foundTopicToDataSeparator = true;
+            }
         }
+
+        if (!foundTopicToDataSeparator) {
+            throw std::runtime_error("Packet ill-formed. ':' could not be found in packet data.");
+        }
+
+
 
     }
 

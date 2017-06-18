@@ -21,12 +21,12 @@ namespace {
 
         SerialFiller serialFiller;
 
-        std::string savedTxData;
-        serialFiller.txDataReady_ = [&](std::string txData) -> void {
+        ByteArray savedTxData;
+        serialFiller.txDataReady_ = [&](ByteArray txData) -> void {
             savedTxData = txData;
         };
 
-        serialFiller.Publish("test-topic", "hello");
+        serialFiller.Publish("test-topic", ByteArray({ 'h', 'e', 'l', 'l', 'o' }));
 
         EXPECT_NE(0, savedTxData.size());
 

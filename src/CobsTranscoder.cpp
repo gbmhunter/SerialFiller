@@ -4,8 +4,8 @@
 namespace mn {
 
     void CobsTranscoder::Encode(
-            const std::string &rawData,
-            std::string &encodedData) {
+            const ByteArray &rawData,
+            ByteArray &encodedData) {
 
         int startOfCurrBlock = 0;
         uint8_t numElementsInCurrBlock = 0;
@@ -47,8 +47,8 @@ namespace mn {
 
     CobsTranscoder::DecodeStatus
     CobsTranscoder::Decode(
-            const std::string &encodedData,
-            std::string &decodedData) {
+            const ByteArray &encodedData,
+            ByteArray &decodedData) {
 
         decodedData.clear();
 

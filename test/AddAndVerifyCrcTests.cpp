@@ -17,8 +17,7 @@ namespace {
     };
 
     TEST_F(AddAndVerifyCrcTests, StandardCheckTest) {
-        std::string packet({ '\x01', '\x02', '\x03', '\xAD', '\xAD' });
-        EXPECT_EQ(true, SerialFiller::VerifyCrc(packet));
+        EXPECT_EQ(true, SerialFiller::VerifyCrc(ByteArray({ 0x01, 0x02, 0x03, 0xAD, 0xAD })));
     }
 
 }  // namespace

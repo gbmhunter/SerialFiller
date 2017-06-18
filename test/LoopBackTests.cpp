@@ -15,7 +15,7 @@ namespace {
         LoopBackTests() {
 
             // Connect output to input (software loopback)
-            serialFiller.txDataReady_ = [&](std::string txData) -> void {
+            serialFiller.txDataReady_ = [&](ByteArray txData) -> void {
                 serialFiller.HandleRxDataReceived(txData);
             };
         }
@@ -25,62 +25,62 @@ namespace {
     };
 
     TEST_F(LoopBackTests, SingleTopicTest) {
-        auto topic = std::string("");
-        auto data = std::string("");
+        auto topic = ByteArray();
+        auto data = ByteArray();
 
         // Subscribe to a test topic
-        std::string savedData;
-        serialFiller.Subscribe("test-topic", [&](std::string data) -> void {
+        ByteArray savedData;
+        serialFiller.Subscribe("test-topic", [&](ByteArray data) -> void {
             savedData = data;
         });
 
         // Publish data on topic
-        serialFiller.Publish("test-topic", "hello");
+        serialFiller.Publish("test-topic", { 'h', 'e', 'l', 'l', 'o'});
 
-        EXPECT_EQ("hello", savedData);
+        EXPECT_EQ(ByteArray({ 'h', 'e', 'l', 'l', 'o'}), savedData);
     }
 
     TEST_F(LoopBackTests, DataWithZerosTest) {
-        auto topic = std::string("");
-        auto data = std::string("");
+        auto topic = std::string();
+        auto data = ByteArray();
 
         // Subscribe to a test topic
-        std::string savedData;
-        serialFiller.Subscribe("test-topic", [&](std::string data) -> void {
+        ByteArray savedData;
+        serialFiller.Subscribe("test-topic", [&](ByteArray data) -> void {
             savedData = data;
         });
 
         // Publish data on topic
-        serialFiller.Publish("test-topic", std::string({ '\x00', '\x00' }));
+        serialFiller.Publish("test-topic", ByteArray({ '\x00', '\x00' }));
 
-        EXPECT_EQ(std::string({ '\x00', '\x00' }), savedData);
+        EXPECT_EQ(ByteArray({ '\x00', '\x00' }), savedData);
     }
 
     TEST_F(LoopBackTests, MultiTopicTest) {
-        auto topic = std::string("");
-        auto data = std::string("");
+        auto topic = std::string();
+        auto data = ByteArray();
 
         // Subscribe to some topics (sharing the data object)
-        std::string savedData;
-        serialFiller.Subscribe("topic1", [&](std::string data) -> void {
+        ByteArray savedData;
+        serialFiller.Subscribe("topic1", [&](ByteArray data) -> void {
             savedData = data;
         });
-        serialFiller.Subscribe("topic2", [&](std::string data) -> void {
+        serialFiller.Subscribe("topic2", [&](ByteArray data) -> void {
             savedData = data;
         });
 
         // Publish data on topic
-        serialFiller.Publish("topic1", "hello");
-        EXPECT_EQ("hello", savedData);
+        serialFiller.Publish("topic1", { 'h' ,'e', 'l', 'l', 'o'});
+        EXPECT_EQ(ByteArray({ 'h' ,'e', 'l', 'l', 'o'}), savedData);
         savedData.clear();
 
-        serialFiller.Publish("topic2", "world");
-        EXPECT_EQ("world", savedData);
+        serialFiller.Publish("topic2", { 'w', 'o', 'r', 'l', 'd'});
+        EXPECT_EQ(ByteArray({ 'w', 'o', 'r', 'l', 'd'}), savedData);
         savedData.clear();
 
         // Publish on topic we haven't registered on
-        serialFiller.Publish("topic3", "nope");
-        EXPECT_EQ("", savedData);
+        serialFiller.Publish("topic3", {});
+        EXPECT_EQ(ByteArray{}, savedData);
         savedData.clear();
     }
 
