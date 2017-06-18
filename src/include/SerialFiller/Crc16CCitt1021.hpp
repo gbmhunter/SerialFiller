@@ -4,7 +4,7 @@ namespace mn {
     class Crc16CCitt1021 {
 
     public:
-        static unsigned short Calc(const unsigned char *data_p, unsigned char length);
+        static uint16_t Calc(std::string data);
 
     };
 
