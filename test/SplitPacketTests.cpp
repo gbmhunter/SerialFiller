@@ -17,7 +17,9 @@ namespace {
     };
 
     TEST_F(SplitPacketTests, BasicTest) {
-        std::string packetAsString = "test-topic:hello";
+        // The "12" at the end of the string is a fake (and incorrect) CRC
+        // value, but this doesn't matter as SplitPacket does not validate the CRC
+        std::string packetAsString = "test-topic:hello12";
         auto packet = ByteArray(packetAsString.begin(), packetAsString.end());
         auto topic = std::string();
         auto data = ByteArray();

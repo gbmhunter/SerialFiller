@@ -31,7 +31,7 @@ namespace {
     }
 
     TEST_F(AddAndVerifyCrcTests, BadCrcTest) {
-        EXPECT_EQ(false, SerialFiller::VerifyCrc(ByteArray({ 0x01, 0x02, 0x03, 0xAD, 0xAE })));
+        EXPECT_THROW(SerialFiller::VerifyCrc(ByteArray({0x01, 0x02, 0x03, 0xAD, 0xAE})), std::runtime_error);
     }
 
 }  // namespace

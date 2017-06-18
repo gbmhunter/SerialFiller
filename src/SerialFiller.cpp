@@ -13,6 +13,9 @@ namespace mn {
         packet.push_back(':');
         std::copy(message.begin(), message.end(), std::back_inserter(packet));
 
+        // Add CRC
+        AddCrc(packet);
+
         ByteArray encodedData;
         CobsTranscoder::Encode(packet, encodedData);
 
@@ -65,7 +68,7 @@ namespace mn {
         packet.push_back((uint8_t)(crcVal));
     }
 
-    bool SerialFiller::VerifyCrc(const ByteArray& packet) {
+    bool SerialFiller::VerifyCrc(const ByteArray &packet) {
 
         // Create a string of the packet without the CRC
         ByteArray packetWithoutCrc(packet.begin(), packet.end() - 2);
@@ -76,6 +79,10 @@ namespace mn {
 
         // Calculate CRC
         uint16_t calcCrcVal = Crc16CCitt1021::Calc(packetWithoutCrc);
+
+        if(sentCrcVal != calcCrcVal) {
+            throw std::runtime_error("CRC values did not match!");
+        }
 
         return sentCrcVal == calcCrcVal;
 
@@ -96,7 +103,8 @@ namespace mn {
             CobsTranscoder::Decode(*it, decodedData);
 
             // 2. Verify CRC
-
+            // This function will throw if CRC does not match
+            VerifyCrc(decodedData);
 
             // Then split packet into topic and data
             SerialFiller::SplitPacket(decodedData, topic, data);
@@ -123,7 +131,10 @@ namespace mn {
             // Look for the first ":"
             if(*it == ':') {
                 topic = std::string(packet.begin(), it);
-                data = ByteArray(it + 1, packet.end());
+
+                // Data starts after ':' and stops 2 bytes before the
+                // end (the 2 CRC bytes)
+                data = ByteArray(it + 1, packet.end() - 2);
                 foundTopicToDataSeparator = true;
             }
         }
@@ -131,11 +142,5 @@ namespace mn {
         if (!foundTopicToDataSeparator) {
             throw std::runtime_error("Packet ill-formed. ':' could not be found in packet data.");
         }
-
-
-
     }
-
-
-
 }
