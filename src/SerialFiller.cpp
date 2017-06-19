@@ -32,14 +32,18 @@ namespace mn {
 
 
     void SerialFiller::PacketizeData(
-            ByteArray &newRxData,
+            const ByteArray &newRxData,
             ByteArray &existingRxData,
             std::vector<ByteArray> &packets) {
 
+        // Clear any existing packets
+        packets.clear();
+
         // Extract all bytes from istream
-        for (auto it = newRxData.begin(); it != newRxData.end(); it++) {
+        for (auto it = newRxData.begin(); it != newRxData.end(); ++it) {
 
             char byteOfData = *it;
+//            it = newRxData.erase(it);
             existingRxData.push_back((uint8_t) byteOfData);
 
             // Look for 0x00 byte in data
@@ -49,9 +53,14 @@ namespace mn {
                 // Move everything from the start to byteOfData from rxData
                 // into a new packet
                 ByteArray packet;
-                for (auto it = existingRxData.begin(); it != existingRxData.end(); it++) {
-                    packet.push_back(*it);
-                }
+                packet.swap(existingRxData);
+//                for (auto it = existingRxData.begin(); it != existingRxData.end(); it++) {
+//                    packet.push_back(*it);
+//                }
+
+                // Everything from the start of the existing data to the
+                // 0x00 byte has been copied into the packet, we can now
+                // clear it.
                 existingRxData.clear();
                 packets.push_back(packet);
             }
@@ -117,9 +126,7 @@ namespace mn {
 //                std::cout << "    value = " << keyIt->second << std::endl;
                 rangeIt->second(data);
             }
-
         }
-
     }
 
     void SerialFiller::SplitPacket(const ByteArray &packet, std::string &topic, ByteArray &data) {

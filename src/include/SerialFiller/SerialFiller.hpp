@@ -41,8 +41,10 @@ namespace mn {
         static void SplitPacket(const ByteArray &packet, std::string &topic, ByteArray &data);
 
         /// \details    Splits a incoming data stream into packets, based on the end-of-frame character.
-        static void PacketizeData(ByteArray& newRxData,
-                           ByteArray& existingRxData, std::vector<ByteArray>& packets);
+        static void PacketizeData(
+                const ByteArray& newRxData,
+                ByteArray& existingRxData,
+                std::vector<ByteArray>& packets);
 
 
         static void AddCrc(ByteArray& packet);
