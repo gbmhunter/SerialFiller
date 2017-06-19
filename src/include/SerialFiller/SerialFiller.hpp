@@ -1,3 +1,12 @@
+///
+/// \file 				Fp32f.cpp
+/// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
+/// \edited             n/a
+/// \created			2017-06-10
+/// \last-modified		2015-06-18
+/// \brief 				Contains the SerialFiller class.
+/// \details
+///		See README.rst in root dir for more info.
 
 #ifndef SERIAL_FILLER_SERIAL_FILLER_H_
 #define SERIAL_FILLER_SERIAL_FILLER_H_
@@ -17,16 +26,14 @@ namespace mn {
 }
 
 #include "SerialFiller/CobsTranscoder.hpp"
-
+#include "SerialFiller/SerialFillerHelper.hpp"
 
 
 namespace mn {
 
-
-
     ///
     /// Format, pre COBS encoded:
-    /// [ 't', 'o', 'p', 'i', 'c'., 0x00, <data 1>, <data 2>, ... , <data n> ]
+    /// [ 't', 'o', 'p', 'i', 'c', ':', <data 1>, <data 2>, ... , <data n>, <CRC MSB>, <CRC LSB> ]
     /// This is then COBS encoded, which frames the end-of-packet with a unique 0x00 byte,
     /// and escapes all pre-existing 0x00's present in packet.
     class SerialFiller {
@@ -37,21 +44,6 @@ namespace mn {
         void Subscribe(std::string topic, std::function<void(ByteArray)> callback);
 
         void HandleRxDataReceived(ByteArray rxData);
-
-        static void SplitPacket(const ByteArray &packet, std::string &topic, ByteArray &data);
-
-        /// \details    Splits a incoming data stream into packets, based on the end-of-frame character.
-        static void PacketizeData(
-                const ByteArray& newRxData,
-                ByteArray& existingRxData,
-                std::vector<ByteArray>& packets);
-
-
-        static void AddCrc(ByteArray& packet);
-
-        /// \param  packet  Packet must be COBS decoded before passing into here. Expects
-        ///                 last two bytes to be the CRC value of all the bytes proceeding it.
-        static bool VerifyCrc(const ByteArray &packet);
 
         std::function<void(ByteArray)> txDataReady_;
 
