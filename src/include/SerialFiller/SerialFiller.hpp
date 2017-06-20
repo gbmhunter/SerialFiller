@@ -1,17 +1,15 @@
 ///
-/// \file 				Fp32f.cpp
+/// \file 				SerialFiller.hpp
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2015-06-18
+/// \last-modified		2015-06-20
 /// \brief 				Contains the SerialFiller class.
 /// \details
-///		See README.rst in root dir for more info.
+///		See README.md in root dir for more info.
 
 #ifndef SERIAL_FILLER_SERIAL_FILLER_H_
 #define SERIAL_FILLER_SERIAL_FILLER_H_
-
-
 
 // System includes
 #include <cstdint>

@@ -1,3 +1,13 @@
+///
+/// \file 				SerialFiller.cpp
+/// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
+/// \edited             n/a
+/// \created			2017-06-10
+/// \last-modified		2015-06-20
+/// \brief 				Contains the SerialFiller class.
+/// \details
+///		See README.md in root dir for more info.
+
 
 // User includes
 #include "SerialFiller/SerialFiller.hpp"
@@ -28,7 +38,6 @@ namespace mn {
 
         // Save subscription
         topicCallbacks.insert({topic, callback});
-
     }
 
 
