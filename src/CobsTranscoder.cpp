@@ -1,84 +1,94 @@
+///
+/// \file 				CobsTranscoder.hpp
+/// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
+/// \edited             n/a
+/// \created			2017-06-10
+/// \last-modified		2017-06-20
+/// \brief 				Contains the CobsTranscoder class.
+/// \details
+///		See README.rst in root dir for more info.
 
+// User includes
 #include "SerialFiller/CobsTranscoder.hpp"
+#include "SerialFiller/Exceptions/CobsDecodingFailed.hpp"
 
 namespace mn {
+    namespace SerialFiller {
 
-    void CobsTranscoder::Encode(
-            const ByteArray &rawData,
-            ByteArray &encodedData) {
+        void CobsTranscoder::Encode(
+                const ByteArray &rawData,
+                ByteArray &encodedData) {
 
-        int startOfCurrBlock = 0;
-        uint8_t numElementsInCurrBlock = 0;
+            int startOfCurrBlock = 0;
+            uint8_t numElementsInCurrBlock = 0;
 
-        auto it = rawData.begin();
+            auto it = rawData.begin();
 
-        // Create space for first (this will be
-        // overwritten once count to next 0x00 is known)
-        encodedData.push_back(0x00);
+            // Create space for first (this will be
+            // overwritten once count to next 0x00 is known)
+            encodedData.push_back(0x00);
 
-        while (it != rawData.end()) {
+            while (it != rawData.end()) {
 
-            if (*it == 0x00) {
-                // Save the number of elements before the next 0x00 into
-                // the output
-                encodedData[startOfCurrBlock] = (uint8_t) (numElementsInCurrBlock + 1);
+                if (*it == 0x00) {
+                    // Save the number of elements before the next 0x00 into
+                    // the output
+                    encodedData[startOfCurrBlock] = (uint8_t) (numElementsInCurrBlock + 1);
 
-                // Add placeholder at start of next block
-                encodedData.push_back(0x00);
+                    // Add placeholder at start of next block
+                    encodedData.push_back(0x00);
 
-                startOfCurrBlock = encodedData.size() - 1;
+                    startOfCurrBlock = encodedData.size() - 1;
 
-                // Reset count of num. elements in current block
-                numElementsInCurrBlock = 0;
+                    // Reset count of num. elements in current block
+                    numElementsInCurrBlock = 0;
 
-            } else {
-                encodedData.push_back(*it);
-                numElementsInCurrBlock++;
+                } else {
+                    encodedData.push_back(*it);
+                    numElementsInCurrBlock++;
+                }
+                it++;
             }
-            it++;
+
+            // Finish the last block
+            // Insert pointer to the terminating 0x00 character
+            encodedData[startOfCurrBlock] = numElementsInCurrBlock + 1;
+            encodedData.push_back(0x00);
         }
 
-        // Finish the last block
-        // Insert pointer to the terminating 0x00 character
-        encodedData[startOfCurrBlock] = numElementsInCurrBlock + 1;
-        encodedData.push_back(0x00);
-    }
+        void CobsTranscoder::Decode(
+                const ByteArray &encodedData,
+                ByteArray &decodedData) {
 
+            decodedData.clear();
 
-    CobsTranscoder::DecodeStatus
-    CobsTranscoder::Decode(
-            const ByteArray &encodedData,
-            ByteArray &decodedData) {
+            int encodedDataPos = 0;
 
-        decodedData.clear();
+            while (encodedDataPos < encodedData.size()) {
 
-        int encodedDataPos = 0;
+                int numElementsInBlock = encodedData[encodedDataPos] - 1;
+                encodedDataPos++;
 
-        while (encodedDataPos < encodedData.size()) {
+                // Copy across all bytes within block
+                for (int i = 0; i < numElementsInBlock; i++) {
+                    uint8_t byteOfData = encodedData[encodedDataPos];
+                    if (byteOfData == 0x00) {
+                        decodedData.clear();
+                        throw CobsDecodingFailed(encodedData);
+                    }
 
-            int numElementsInBlock = encodedData[encodedDataPos] - 1;
-            encodedDataPos++;
-
-            // Copy across all bytes within block
-            for (int i = 0; i < numElementsInBlock; i++) {
-                uint8_t byteOfData = encodedData[encodedDataPos];
-                if (byteOfData == 0x00) {
-                    decodedData.clear();
-                    return DecodeStatus::ERROR_ZERO_BYTE_NOT_EXPECTED;
+                    decodedData.push_back(encodedData[encodedDataPos]);
+                    encodedDataPos++;
                 }
 
-                decodedData.push_back(encodedData[encodedDataPos]);
-                encodedDataPos++;
+                if (encodedData[encodedDataPos] == 0x00) {
+                    // End of packet found!
+                    break;
+                }
+
+                decodedData.push_back(0x00);
             }
 
-            if (encodedData[encodedDataPos] == 0x00) {
-                // End of packet found!
-                break;
-            }
-
-            decodedData.push_back(0x00);
         }
-
-        return DecodeStatus::SUCCESS;
-    }
-}
+    } // namespace SerialFiller
+} // namespace mn

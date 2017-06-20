@@ -26,33 +26,34 @@
 
 
 namespace mn {
+    namespace SerialFiller {
 
 
-    class SerialFillerHelper {
-    public:
+        class SerialFillerHelper {
+        public:
 
-        static void SplitPacket(const ByteArray &packet, std::string &topic, ByteArray &data);
+            static void SplitPacket(const ByteArray &packet, std::string &topic, ByteArray &data);
 
-        /// \details    Moves new RX data into the RX buffer, while looking for the
-        ///             end-of-frame character. If EOF is found, packet is populated
-        ///             and this method returns.
-        static void MoveRxDataInBuffer(
-                ByteQueue &newRxData,
-                ByteQueue &rxDataBuffer,
-                ByteArray &packet);
-
-
-        static void AddCrc(ByteArray& packet);
-
-        /// \param  packet  Packet must be COBS decoded before passing into here. Expects
-        ///                 last two bytes to be the CRC value of all the bytes proceeding it.
-        static bool VerifyCrc(const ByteArray &packet);
+            /// \details    Moves new RX data into the RX buffer, while looking for the
+            ///             end-of-frame character. If EOF is found, packet is populated
+            ///             and this method returns.
+            static void MoveRxDataInBuffer(
+                    ByteQueue &newRxData,
+                    ByteQueue &rxDataBuffer,
+                    ByteArray &packet);
 
 
-    private:
+            static void AddCrc(ByteArray &packet);
 
-    };
+            /// \param  packet  Packet must be COBS decoded before passing into here. Expects
+            ///                 last two bytes to be the CRC value of all the bytes proceeding it.
+            static bool VerifyCrc(const ByteArray &packet);
 
+
+        private:
+
+        };
+    }
 }
 
 #endif // #ifndef SERIAL_FILLER_SERIAL_FILLER_H_

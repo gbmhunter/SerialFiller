@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
 
-#include "SerialFiller/Crc16CCitt1021.hpp"
+#include "SerialFiller/Crc16Ccitt1021.hpp"
 
-using namespace mn;
+using namespace mn::SerialFiller;
 
 namespace {
 
@@ -18,17 +18,17 @@ namespace {
     };
 
     TEST_F(CrcTests, StandardCheckTest) {
-        uint16_t crcVal2 = Crc16CCitt1021::Calc({ '1', '2', '3', '4', '5', '6', '7', '8', '9' });
+        uint16_t crcVal2 = Crc16Ccitt1021::Calc({ '1', '2', '3', '4', '5', '6', '7', '8', '9' });
         EXPECT_EQ(0x29B1, crcVal2);
     }
 
     TEST_F(CrcTests, EmptyTest) {
-        uint16_t crcVal2 = Crc16CCitt1021::Calc({ });
+        uint16_t crcVal2 = Crc16Ccitt1021::Calc({ });
         EXPECT_EQ(0xFFFF, crcVal2);
     }
 
     TEST_F(CrcTests, ZeroTest) {
-        uint16_t crcVal2 = Crc16CCitt1021::Calc({'\x00'});
+        uint16_t crcVal2 = Crc16Ccitt1021::Calc({'\x00'});
         EXPECT_EQ(0xE1F0, crcVal2);
     }
 
@@ -41,7 +41,7 @@ namespace {
             std::copy(sequence.begin(), sequence.end(), std::back_inserter(data));
         }
 
-        uint16_t crcVal2 = Crc16CCitt1021::Calc(data);
+        uint16_t crcVal2 = Crc16Ccitt1021::Calc(data);
         EXPECT_EQ(0xC347, crcVal2);
     }
 

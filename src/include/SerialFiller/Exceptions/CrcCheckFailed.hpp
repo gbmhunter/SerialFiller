@@ -8,33 +8,40 @@
 /// \details
 ///		See README.rst in root dir for more info.
 
+#ifndef MN_SERIAL_FILLER_CRC_CHECK_FAILED_H_
+#define MN_SERIAL_FILLER_CRC_CHECK_FAILED_H_
+
 // System includes
 #include <cstdint>
 #include <iomanip>
 #include <sstream>
 
 namespace mn {
+    namespace SerialFiller {
 
-    class CrcCheckFailed : public std::runtime_error {
-    public:
+        class CrcCheckFailed : public std::runtime_error {
+        public:
 
-        template<typename T>
-        std::string IntToHex(T value) {
-            std::stringstream stream;
-            stream << "0x"
-                   << std::setfill('0') << std::setw(sizeof(T) * 2)
-                   << std::hex << value;
-            return stream.str();
-        }
+            template<typename T>
+            std::string IntToHex(T value) {
+                std::stringstream stream;
+                stream << "0x"
+                       << std::setfill('0') << std::setw(sizeof(T) * 2)
+                       << std::hex << value;
+                return stream.str();
+            }
 
-        CrcCheckFailed(uint16_t calculatedCrcVal, uint16_t sentCrcVal) :
-                runtime_error("CRC check failed. Calculated CRC value = " + IntToHex(calculatedCrcVal) +
-                              ", sent CRC value = " + IntToHex(sentCrcVal) + ".") {
-            calculatedCrcVal_ = calculatedCrcVal;
-            sentCrcVal_ = sentCrcVal;
+            CrcCheckFailed(uint16_t calculatedCrcVal, uint16_t sentCrcVal) :
+                    runtime_error("CRC check failed. Calculated CRC value = " + IntToHex(calculatedCrcVal) +
+                                  ", sent CRC value = " + IntToHex(sentCrcVal) + ".") {
+                calculatedCrcVal_ = calculatedCrcVal;
+                sentCrcVal_ = sentCrcVal;
+            };
+
+            uint16_t calculatedCrcVal_;
+            uint16_t sentCrcVal_;
         };
+    } // namespace SerialFiller
+} // namespace mn
 
-        uint16_t calculatedCrcVal_;
-        uint16_t sentCrcVal_;
-    };
-}
+#endif // #ifndef MN_SERIAL_FILLER_CRC_CHECK_FAILED_H_

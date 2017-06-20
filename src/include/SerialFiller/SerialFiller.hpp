@@ -21,48 +21,60 @@
 
 // Forward declarations
 namespace mn {
-    using ByteArray = std::vector<uint8_t>;
-    using ByteQueue = std::deque<uint8_t>;
+    namespace SerialFiller {
+        class SerialFiller;
+        using ByteArray = std::vector<uint8_t>;
+        using ByteQueue = std::deque<uint8_t>;
+    }
 }
 
 // User includes
 #include "SerialFiller/CobsTranscoder.hpp"
 #include "SerialFiller/SerialFillerHelper.hpp"
+#include "SerialFiller/Exceptions/CobsDecodingFailed.hpp"
 #include "SerialFiller/Exceptions/CrcCheckFailed.hpp"
+#include "SerialFiller/Exceptions/NotEnoughBytes.hpp"
 
 namespace mn {
+    namespace SerialFiller {
 
-    ///
-    /// Format, pre COBS encoded:
-    /// [ 't', 'o', 'p', 'i', 'c', ':', <data 1>, <data 2>, ... , <data n>, <CRC MSB>, <CRC LSB> ]
-    /// This is then COBS encoded, which frames the end-of-packet with a unique 0x00 byte,
-    /// and escapes all pre-existing 0x00's present in packet.
-    class SerialFiller {
-    public:
+        ///
+        /// Format, pre COBS encoded:
+        /// [ 't', 'o', 'p', 'i', 'c', ':', <data 1>, <data 2>, ... , <data n>, <CRC MSB>, <CRC LSB> ]
+        /// This is then COBS encoded, which frames the end-of-packet with a unique 0x00 byte,
+        /// and escapes all pre-existing 0x00's present in packet.
+        class SerialFiller {
+        public:
 
-        void Publish(std::string topic, ByteArray data);
+            /// \brief      The minimum number of bytes that a packet can contain to be valid.
+            /// \details    Minimum size = 1B for COBS start byte + 1B for topic + 1B for ':' separator, 0B for data + 2B for CRC + 1B for EOF
+            ///                          = 6bytes
+            static constexpr uint8_t minNumBytesPerPacket = 6;
 
-        void Subscribe(std::string topic, std::function<void(ByteArray)> callback);
+            void Publish(std::string topic, ByteArray data);
 
-        /// \brief      Pass in received RX data to SerialFiller.
-        /// \details    SerialFiller will add this data to it's internal RX data buffer, and then
-        ///             attempt to find and extract valid packets. If SerialFiller finds valid packets,
-        ///             it will then call all callbacks associated with that topic.
-        /// \throws     CrcCheckFailed
-        void GiveRxData(ByteQueue& rxData);
+            void Subscribe(std::string topic, std::function<void(ByteArray)> callback);
 
-        std::function<void(ByteQueue)> txDataReady_;
+            /// \brief      Pass in received RX data to SerialFiller.
+            /// \details    SerialFiller will add this data to it's internal RX data buffer, and then
+            ///             attempt to find and extract valid packets. If SerialFiller finds valid packets,
+            ///             it will then call all callbacks associated with that topic.
+            /// \throws     NotEnoughBytes
+            /// \throws     CrcCheckFailed
+            void GiveRxData(ByteQueue &rxData);
 
-    private:
+            std::function<void(ByteQueue)> txDataReady_;
 
-        ByteQueue rxBuffer;
+        private:
 
-        typedef std::multimap<std::string, std::function<void(ByteArray)>> TopicCallback;
-        typedef std::pair<TopicCallback::iterator, TopicCallback::iterator> RangeType;
-        TopicCallback topicCallbacks;
+            ByteQueue rxBuffer;
 
-    };
+            typedef std::multimap<std::string, std::function<void(ByteArray)>> TopicCallback;
+            typedef std::pair<TopicCallback::iterator, TopicCallback::iterator> RangeType;
+            TopicCallback topicCallbacks;
 
-}
+        };
+    } // namespace SerialFiller
+} // namespace mn
 
 #endif // #ifndef SERIAL_FILLER_SERIAL_FILLER_H_
