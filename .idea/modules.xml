@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/MSorting.iml" filepath="$PROJECT_DIR$/.idea/MSorting.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/SerialFiller.iml" filepath="$PROJECT_DIR$/.idea/SerialFiller.iml" />
     </modules>
   </component>
