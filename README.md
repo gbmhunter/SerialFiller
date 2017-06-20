@@ -6,23 +6,30 @@ Like a serial killer, but friendlier. A C++ serial publish/subscribe based commu
 - Simple publish/subscribe system
 - Ability to any type of data on a topic
 - COBS encoding for reliable, low-overhead framing of packets
-- CRC16 check for packet integrity
+- CRC16 check for packet integrity (uses CRC16-CCITT, polynomial 0x1021, which does not suffer from the inability to detect '0x00' bytes at the start of the packet)
+- Platform agnostic data I/O (you fill in the hardware abstraction layer by providing a callback for `SerialFiller::txDataReady_` and call `SerialFiller::HandleRxData()` when new RX data is available).
+- Functionality backed by numerous unit tests
+- CMake based build system
 
 Examples
 --------
 
-Publish example:
+**Setup:**
 
 ````c++
 #include <SerialFiller/SerialFiller.hpp>
 
 mn::SerialFiller serialFiller;
+````
 
+**Publish example:**
+
+````c++
 // Publish the data { 0x01, 0x02, 0x03 } on topic "mytopic" 
 serialFiller.Publish("mytopic", { 0x01, 0x02, 0x03 });
 ````
 
-Subscribe example:
+**Subscribe example:**
 
 ````c++
 // Provide a callback for "mytopic" messages using
@@ -32,8 +39,9 @@ serialFiller.Subscribe("mytopic", [](std::vector<uint8_t> rxData) -> void {
         
         std::cout << " Data = ";
         for(auto dataByte : rxData) {
-            std::cout << std::to_string(dataByte) << std::endl;
+            std::cout << std::to_string(dataByte);
         }
+        std::cout << std::endl;
     });
 ````
 
