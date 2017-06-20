@@ -21,17 +21,14 @@ namespace {
 
         SerialFiller serialFiller;
 
-        ByteArray savedTxData;
-        serialFiller.txDataReady_ = [&](ByteArray txData) -> void {
+        ByteQueue savedTxData;
+        serialFiller.txDataReady_ = [&](ByteQueue txData) -> void {
             savedTxData = txData;
         };
 
         serialFiller.Publish("test-topic", ByteArray({ 'h', 'e', 'l', 'l', 'o' }));
 
         EXPECT_NE(0, savedTxData.size());
-
-
-
     }
 
 }  // namespace

@@ -29,8 +29,10 @@ namespace mn {
         ByteArray encodedData;
         CobsTranscoder::Encode(packet, encodedData);
 
+        ByteQueue txData(encodedData.begin(), encodedData.end());
+
         // Emit TX send event
-        txDataReady_(encodedData);
+        txDataReady_(txData);
     };
 
 
@@ -41,37 +43,40 @@ namespace mn {
     }
 
 
-    void SerialFiller::GiveRxData(ByteArray rxData) {
+    void SerialFiller::GiveRxData(ByteQueue rxData) {
 
-        std::vector<ByteArray> packets;
-        SerialFillerHelper::PacketizeData(rxData, rxBuffer, packets);
+        ByteArray packet;
+        while(SerialFillerHelper::MoveRxDataInBuffer(rxData, rxBuffer, packet), !packet.empty()) {
 
-        for(auto it = packets.begin(); it != packets.end(); it++) {
             std::string topic;
             ByteArray data;
 
-            // FOR EACH PACKET:
+            //==============================//
+            //======= FOR EACH PACKET ======//
+            //==============================//
+
             // 1. Remove COBS encoding
             ByteArray decodedData;
-            CobsTranscoder::Decode(*it, decodedData);
+            CobsTranscoder::Decode(packet, decodedData);
 
             // 2. Verify CRC
-            // This function will throw if CRC does not match
+            //    This function will throw if CRC does not match. We don't
+            //    want to prevent the processing of further packets, so catch error,
+            //    save it, and throw once packet processing is finished
             SerialFillerHelper::VerifyCrc(decodedData);
 
-            // Then split packet into topic and data
+            // 3. Then split packet into topic and data
+            //    This will throw if the ':' that splits the topic from the data cannot
+            //    be found, or the topic is not a valid string
             SerialFillerHelper::SplitPacket(decodedData, topic, data);
 
-            // Call every callback associated with this topic
-//            auto keyRange = topicCallbacks.equal_range(topic);
-//            std::pair<TopicCallback::iterator, TopicCallback::iterator> range;
+            // 4. Call every callback associated with this topic
             RangeType range = topicCallbacks.equal_range(topic);
             for(TopicCallback::iterator rangeIt = range.first;  rangeIt != range.second;  ++rangeIt) {
-//                std::cout << "    value = " << keyIt->second << std::endl;
                 rangeIt->second(data);
             }
+
+            SerialFillerHelper::MoveRxDataInBuffer(rxData, rxBuffer, packet);
         }
     }
-
-
 }

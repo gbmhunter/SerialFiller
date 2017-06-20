@@ -6,20 +6,22 @@
 namespace mn {
 
 
-    void SerialFillerHelper::PacketizeData(
-            const ByteArray &newRxData,
-            ByteArray &existingRxData,
-            std::vector<ByteArray> &packets) {
+    void SerialFillerHelper::MoveRxDataInBuffer(
+            ByteQueue &newRxData,
+            ByteQueue &rxDataBuffer,
+            ByteArray &packet) {
 
         // Clear any existing packets
-        packets.clear();
+        packet.clear();
 
-        // Extract all bytes from istream
-        for (auto it = newRxData.begin(); it != newRxData.end(); ++it) {
+        // Pop bytes from front of queue
+        while(!newRxData.empty()) {
 
-            char byteOfData = *it;
-//            it = newRxData.erase(it);
-            existingRxData.push_back((uint8_t) byteOfData);
+
+            uint8_t byteOfData = newRxData.front();
+            newRxData.pop_front();
+
+            rxDataBuffer.push_back(byteOfData);
 
             // Look for 0x00 byte in data
             if (byteOfData == 0x00) {
@@ -27,17 +29,13 @@ namespace mn {
 
                 // Move everything from the start to byteOfData from rxData
                 // into a new packet
-                ByteArray packet;
-                packet.swap(existingRxData);
-//                for (auto it = existingRxData.begin(); it != existingRxData.end(); it++) {
-//                    packet.push_back(*it);
-//                }
+                for(auto it = rxDataBuffer.begin(); it != rxDataBuffer.end(); ++it) {
+                    packet.push_back(*it);
+                }
 
-                // Everything from the start of the existing data to the
-                // 0x00 byte has been copied into the packet, we can now
-                // clear it.
-                existingRxData.clear();
-                packets.push_back(packet);
+                rxDataBuffer.clear();
+
+                return;
             }
         }
     }

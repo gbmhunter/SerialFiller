@@ -16,11 +16,13 @@
 #include <functional>
 #include <iostream>
 #include <map>
+#include <queue>
 #include <vector>
 
 // Forward declarations
 namespace mn {
     using ByteArray = std::vector<uint8_t>;
+    using ByteQueue = std::deque<uint8_t>;
 }
 
 // User includes
@@ -47,13 +49,13 @@ namespace mn {
         ///             attempt to find and extract valid packets. If SerialFiller finds valid packets,
         ///             it will then call all callbacks associated with that topic.
         /// \throws     CrcCheckFailed
-        void GiveRxData(ByteArray rxData);
+        void GiveRxData(ByteQueue rxData);
 
-        std::function<void(ByteArray)> txDataReady_;
+        std::function<void(ByteQueue)> txDataReady_;
 
     private:
 
-        ByteArray rxBuffer;
+        ByteQueue rxBuffer;
 
         typedef std::multimap<std::string, std::function<void(ByteArray)>> TopicCallback;
         typedef std::pair<TopicCallback::iterator, TopicCallback::iterator> RangeType;

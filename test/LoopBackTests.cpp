@@ -15,7 +15,7 @@ namespace {
         LoopBackTests() {
 
             // Connect output to input (software loopback)
-            serialFiller.txDataReady_ = [&](ByteArray txData) -> void {
+            serialFiller.txDataReady_ = [&](ByteQueue txData) -> void {
                 serialFiller.GiveRxData(txData);
             };
         }

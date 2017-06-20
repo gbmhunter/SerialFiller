@@ -45,6 +45,8 @@ serialFiller.Subscribe("mytopic", [](std::vector<uint8_t> rxData) -> void {
     });
 ````
 
+See the source code in the `examples` directory for more real-world examples!
+
 Building
 --------
 

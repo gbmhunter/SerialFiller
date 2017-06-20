@@ -1,10 +1,10 @@
 ///
-/// \file 				main.cpp
+/// \file 				ExceptionCheckingExample.cpp
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-20
 /// \last-modified		2015-06-20
-/// \brief 				Contains a simple SerialFiller example.
+/// \brief 				Contains an example which checks for all types of exceptions thrown.
 /// \details
 ///		See README.md in root dir for more info.
 
@@ -17,7 +17,12 @@ int main() {
     // Connect the I/O together, to make
     // a software "loop-back"
     serialFiller.txDataReady_ = [&](mn::ByteArray txData) -> void {
-        serialFiller.GiveRxData(txData);
+
+        try {
+            serialFiller.GiveRxData(txData);
+        } catch (mn::CrcCheckFailed e) {
+            std::cout << e.what() << std::endl;
+        }
     };
 
     // Subscribe to topic "mytopic"

@@ -1,10 +1,10 @@
 ///
-/// \file 				Fp32f.cpp
+/// \file 				SerialFillerHelper.hpp
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2015-06-18
-/// \brief 				Contains the SerialFiller class.
+/// \last-modified		2017-06-20
+/// \brief 				Contains the SerialFillerHelper class.
 /// \details
 ///		See README.rst in root dir for more info.
 
@@ -33,11 +33,13 @@ namespace mn {
 
         static void SplitPacket(const ByteArray &packet, std::string &topic, ByteArray &data);
 
-        /// \details    Splits a incoming data stream into packets, based on the end-of-frame character.
-        static void PacketizeData(
-                const ByteArray& newRxData,
-                ByteArray& existingRxData,
-                std::vector<ByteArray>& packets);
+        /// \details    Moves new RX data into the RX buffer, while looking for the
+        ///             end-of-frame character. If EOF is found, packet is populated
+        ///             and this method returns.
+        static void MoveRxDataInBuffer(
+                ByteQueue &newRxData,
+                ByteQueue &rxDataBuffer,
+                ByteArray &packet);
 
 
         static void AddCrc(ByteArray& packet);
