@@ -3,13 +3,14 @@ SerialFiller
 
 Like a serial killer, but friendlier. A C++ serial publish/subscribe based communication protocol.
 
-- Simple publish/subscribe system
-- Ability to any type of data on a topic
+- Simple publish/subscribe system for sending messages across serial links
+- Ability to send any type of data on a "topic"
 - COBS encoding for reliable, low-overhead framing of packets
 - CRC16 check for packet integrity (uses CRC16-CCITT, polynomial 0x1021, which does not suffer from the inability to detect '0x00' bytes at the start of the packet)
-- Platform agnostic data I/O (you fill in the hardware abstraction layer by providing a callback for `SerialFiller::txDataReady_` and call `SerialFiller::HandleRxData()` when new RX data is available).
+- Platform agnostic data I/O (you fill in the hardware abstraction layer by providing a callback for `SerialFiller::txDataReady_` and call `SerialFiller::GiveRxData()` when new RX data is available).
 - Functionality backed by numerous unit tests
 - CMake based build system
+- CLion project files provided (use of CLion is optional)
 
 Examples
 --------
@@ -69,3 +70,5 @@ Once SerialFiller has been built, run:
 ````
 
 On a typical Linux system, this will install the static library `libSerialFiller.a` into `/usr/local/bin` and the header files into `/usr/local/include/SerialFiller` (a directory is created inside `/usr/local/include` as not to pollute the system folder space).
+
+This command does not install the unit tests or examples.
