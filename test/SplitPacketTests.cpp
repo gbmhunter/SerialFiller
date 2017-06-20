@@ -28,4 +28,14 @@ namespace {
         EXPECT_EQ(ByteArray({'h', 'e', 'l', 'l', 'o'}), data);
     }
 
+    TEST_F(SplitPacketTests, NoTopicDataSeparator) {
+        auto packet = ByteArray({ 0x01, 0x02, 0x03 });
+        auto topic = std::string();
+        auto data = ByteArray();
+        EXPECT_THROW(SerialFillerHelper::SplitPacket(packet, topic, data), NoTopicDataSeparator);
+        EXPECT_EQ("", topic);
+        EXPECT_TRUE(data.empty());
+
+    }
+
 }  // namespace

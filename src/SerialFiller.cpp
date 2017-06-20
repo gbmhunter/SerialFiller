@@ -61,22 +61,24 @@ namespace mn {
                 if (packet.size() < minNumBytesPerPacket)
                     throw NotEnoughBytes(packet);
 
-                // 1. Remove COBS encoding
+                // 2. Remove COBS encoding
+                //    This method will throw if the packet does not have a valid COBS
+                //    encoding.
                 ByteArray decodedData;
                 CobsTranscoder::Decode(packet, decodedData);
 
-                // 2. Verify CRC
+                // 3. Verify CRC
                 //    This function will throw if CRC does not match. We don't
                 //    want to prevent the processing of further packets, so catch error,
                 //    save it, and throw once packet processing is finished
                 SerialFillerHelper::VerifyCrc(decodedData);
 
-                // 3. Then split packet into topic and data
+                // 4. Then split packet into topic and data
                 //    This will throw if the ':' that splits the topic from the data cannot
                 //    be found, or the topic is not a valid string
                 SerialFillerHelper::SplitPacket(decodedData, topic, data);
 
-                // 4. Call every callback associated with this topic
+                // 5. Call every callback associated with this topic
                 RangeType range = topicCallbacks.equal_range(topic);
                 for (TopicCallback::iterator rangeIt = range.first; rangeIt != range.second; ++rangeIt) {
                     rangeIt->second(data);

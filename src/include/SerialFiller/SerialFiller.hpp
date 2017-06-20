@@ -34,6 +34,7 @@ namespace mn {
 #include "SerialFiller/Exceptions/CobsDecodingFailed.hpp"
 #include "SerialFiller/Exceptions/CrcCheckFailed.hpp"
 #include "SerialFiller/Exceptions/NotEnoughBytes.hpp"
+#include "SerialFiller/Exceptions/NoTopicDataSeparator.hpp"
 
 namespace mn {
     namespace SerialFiller {
@@ -60,7 +61,9 @@ namespace mn {
             ///             attempt to find and extract valid packets. If SerialFiller finds valid packets,
             ///             it will then call all callbacks associated with that topic.
             /// \throws     NotEnoughBytes
+            /// \throws     CobsDecodingFailed
             /// \throws     CrcCheckFailed
+            /// \throws     NoTopicDataSeparator
             void GiveRxData(ByteQueue &rxData);
 
             std::function<void(ByteQueue)> txDataReady_;

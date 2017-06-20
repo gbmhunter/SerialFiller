@@ -99,7 +99,7 @@ namespace mn {
             }
 
             if (!foundTopicToDataSeparator) {
-                throw std::runtime_error("Packet ill-formed. ':' could not be found in packet data.");
+                throw NoTopicDataSeparator(packet);
             }
         }
     } // namespace SerialFiller
