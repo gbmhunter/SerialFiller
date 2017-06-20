@@ -65,7 +65,7 @@ namespace mn {
         uint16_t calcCrcVal = Crc16CCitt1021::Calc(packetWithoutCrc);
 
         if(sentCrcVal != calcCrcVal) {
-            throw std::runtime_error("CRC values did not match!");
+            throw CrcCheckFailed(calcCrcVal, sentCrcVal);
         }
 
         return sentCrcVal == calcCrcVal;

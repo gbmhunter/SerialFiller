@@ -23,6 +23,7 @@ namespace mn {
         txDataReady_(encodedData);
     };
 
+
     void SerialFiller::Subscribe(std::string topic, std::function<void(ByteArray)> callback) {
 
         // Save subscription
@@ -31,7 +32,7 @@ namespace mn {
     }
 
 
-    void SerialFiller::HandleRxDataReceived(ByteArray rxData) {
+    void SerialFiller::GiveRxData(ByteArray rxData) {
 
         std::vector<ByteArray> packets;
         SerialFillerHelper::PacketizeData(rxData, rxBuffer, packets);

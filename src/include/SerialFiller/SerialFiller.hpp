@@ -25,9 +25,10 @@ namespace mn {
     using ByteArray = std::vector<uint8_t>;
 }
 
+// User includes
 #include "SerialFiller/CobsTranscoder.hpp"
 #include "SerialFiller/SerialFillerHelper.hpp"
-
+#include "SerialFiller/Exceptions/CrcCheckFailed.hpp"
 
 namespace mn {
 
@@ -43,7 +44,12 @@ namespace mn {
 
         void Subscribe(std::string topic, std::function<void(ByteArray)> callback);
 
-        void HandleRxDataReceived(ByteArray rxData);
+        /// \brief      Pass in received RX data to SerialFiller.
+        /// \details    SerialFiller will add this data to it's internal RX data buffer, and then
+        ///             attempt to find and extract valid packets. If SerialFiller finds valid packets,
+        ///             it will then call all callbacks associated with that topic.
+        /// \throws     CrcCheckFailed
+        void GiveRxData(ByteArray rxData);
 
         std::function<void(ByteArray)> txDataReady_;
 

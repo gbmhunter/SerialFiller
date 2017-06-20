@@ -16,7 +16,7 @@ namespace {
 
             // Connect output to input (software loopback)
             serialFiller.txDataReady_ = [&](ByteArray txData) -> void {
-                serialFiller.HandleRxDataReceived(txData);
+                serialFiller.GiveRxData(txData);
             };
         }
 
