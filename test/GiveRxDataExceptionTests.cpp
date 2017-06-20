@@ -32,6 +32,10 @@ namespace {
         EXPECT_TRUE(rxData.empty());
     }
 
-
-
+    TEST_F(GiveRxDataExceptionTests, NoTopicDataSeparator) {
+        // Don't add ':' between 't' and data! CRC and COBS encoding is correct
+        auto rxData = ByteQueue({ 0x07, 't', 0x01, 0x02, 0x03, 0x6D, 0x75, 0x00 });
+        EXPECT_THROW(serialFiller.GiveRxData(rxData), NoTopicDataSeparator);
+        EXPECT_TRUE(rxData.empty());
+    }
 }  // namespace
