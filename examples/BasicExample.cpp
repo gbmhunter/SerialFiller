@@ -8,15 +8,18 @@
 /// \details
 ///		See README.md in root dir for more info.
 
+// User includes
 #include "SerialFiller/SerialFiller.hpp"
+
+using namespace mn::SerialFiller;
 
 int main() {
 
-    mn::SerialFiller serialFiller;
+    SerialFiller serialFiller;
 
     // Connect the I/O together, to make
     // a software "loop-back"
-    serialFiller.txDataReady_ = [&](mn::ByteQueue txData) -> void {
+    serialFiller.txDataReady_ = [&](ByteQueue txData) -> void {
         serialFiller.GiveRxData(txData);
     };
 

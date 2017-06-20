@@ -10,17 +10,27 @@
 
 #include "SerialFiller/SerialFiller.hpp"
 
+using namespace mn::SerialFiller;
+
 int main() {
 
-    mn::SerialFiller serialFiller;
+    SerialFiller serialFiller;
 
     // Connect the I/O together, to make
     // a software "loop-back"
-    serialFiller.txDataReady_ = [&](mn::ByteQueue txData) -> void {
+    serialFiller.txDataReady_ = [&](ByteQueue txData) -> void {
 
         try {
             serialFiller.GiveRxData(txData);
-        } catch (mn::CrcCheckFailed e) {
+
+            // Catch the different types of exceptions!
+        } catch(NotEnoughBytes e) {
+            std::cout << e.what() << std::endl;
+        } catch(CobsDecodingFailed e) {
+            std::cout << e.what() << std::endl;
+        } catch(CrcCheckFailed e) {
+            std::cout << e.what() << std::endl;
+        } catch(NoTopicDataSeparator e) {
             std::cout << e.what() << std::endl;
         }
     };
