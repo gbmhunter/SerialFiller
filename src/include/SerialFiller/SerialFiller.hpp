@@ -49,7 +49,7 @@ namespace mn {
         ///             attempt to find and extract valid packets. If SerialFiller finds valid packets,
         ///             it will then call all callbacks associated with that topic.
         /// \throws     CrcCheckFailed
-        void GiveRxData(ByteQueue rxData);
+        void GiveRxData(ByteQueue& rxData);
 
         std::function<void(ByteQueue)> txDataReady_;
 

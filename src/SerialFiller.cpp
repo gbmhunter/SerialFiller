@@ -43,7 +43,7 @@ namespace mn {
     }
 
 
-    void SerialFiller::GiveRxData(ByteQueue rxData) {
+    void SerialFiller::GiveRxData(ByteQueue& rxData) {
 
         ByteArray packet;
         while(SerialFillerHelper::MoveRxDataInBuffer(rxData, rxBuffer, packet), !packet.empty()) {

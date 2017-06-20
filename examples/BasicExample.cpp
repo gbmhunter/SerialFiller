@@ -16,7 +16,7 @@ int main() {
 
     // Connect the I/O together, to make
     // a software "loop-back"
-    serialFiller.txDataReady_ = [&](mn::ByteArray txData) -> void {
+    serialFiller.txDataReady_ = [&](mn::ByteQueue txData) -> void {
         serialFiller.GiveRxData(txData);
     };
 
