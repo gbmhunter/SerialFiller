@@ -19,6 +19,8 @@
 #include <queue>
 #include <vector>
 
+#include <HearYeHearYe/Event.hpp>
+
 // Forward declarations
 namespace mn {
     namespace SerialFiller {
@@ -66,7 +68,8 @@ namespace mn {
             /// \throws     NoTopicDataSeparator
             void GiveRxData(ByteQueue &rxData);
 
-            std::function<void(ByteQueue)> txDataReady_;
+//            std::function<void(ByteQueue)> txDataReady_;
+            mn::HearYeHearYe::Event<void(ByteQueue)> txDataReady_;
 
         private:
 

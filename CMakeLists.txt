@@ -1,12 +1,13 @@
 cmake_minimum_required (VERSION 2.8.11)
 project (SerialFiller)
 
-# Protobuf is required to create the C++ source code that
-# describes the messages from the .proto files
-# (and also provides serialization functions
-# for these messages)
-#find_package(Protobuf REQUIRED)
+# EXTERNAL_INSTALL_LOCATION is used by external projects, except for gtest
+include(ExternalProject)
+set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
 
+#=================================================================================================#
+#============================================== gtest ============================================#
+#=================================================================================================#
 
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
@@ -34,7 +35,21 @@ if(CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include"
                       "${gmock_SOURCE_DIR}/include")
 endif()
- 
+
+#=================================================================================================#
+#========================================= HearYeHearYe ==========================================#
+#=================================================================================================#
+
+ExternalProject_Add(HearYeHearYe
+        GIT_REPOSITORY https://github.com/mbedded-ninja/HearYeHearYe
+        CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+        )
+include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
+
+#=================================================================================================#
+#========================================= This Project ==========================================#
+#=================================================================================================#
+
 # Now simply link your own targets against gtest, gmock,
 # etc. as appropriate
 include_directories(src/include)

@@ -22,9 +22,9 @@ namespace {
         SerialFiller serialFiller;
 
         ByteQueue savedTxData;
-        serialFiller.txDataReady_ = [&](ByteQueue txData) -> void {
+        serialFiller.txDataReady_.AddListener([&](ByteQueue txData) -> void {
             savedTxData = txData;
-        };
+        });
 
         serialFiller.Publish("test-topic", ByteArray({ 'h', 'e', 'l', 'l', 'o' }));
 

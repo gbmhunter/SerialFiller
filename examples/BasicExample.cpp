@@ -19,9 +19,9 @@ int main() {
 
     // Connect the I/O together, to make
     // a software "loop-back"
-    serialFiller.txDataReady_ = [&](ByteQueue txData) -> void {
+    serialFiller.txDataReady_.AddListener([&](ByteQueue txData) -> void {
         serialFiller.GiveRxData(txData);
-    };
+    });
 
     // Subscribe to topic "mytopic"
     serialFiller.Subscribe("mytopic", [](std::vector<uint8_t> rxData) -> void {

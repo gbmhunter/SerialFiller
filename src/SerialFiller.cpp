@@ -34,7 +34,7 @@ namespace mn {
             ByteQueue txData(encodedData.begin(), encodedData.end());
 
             // Emit TX send event
-            txDataReady_(txData);
+            txDataReady_.Fire(txData);
         };
 
 

@@ -15,9 +15,9 @@ namespace {
         LoopBackTests() {
 
             // Connect output to input (software loopback)
-            serialFiller.txDataReady_ = [&](ByteQueue txData) -> void {
+            serialFiller.txDataReady_.AddListener([&](ByteQueue txData) -> void {
                 serialFiller.GiveRxData(txData);
-            };
+            });
         }
 
         virtual ~LoopBackTests() {
