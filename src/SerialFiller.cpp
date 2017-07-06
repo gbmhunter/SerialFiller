@@ -80,6 +80,14 @@ namespace mn {
 
                 // 5. Call every callback associated with this topic
                 RangeType range = topicCallbacks.equal_range(topic);
+
+                // If no subscribers are listening to this topic,
+                // fire the "no subscribers for topic" event (user can
+                // listen to this)
+                if(range.first == range.second) {
+                    noSubscribersForTopic_.Fire(topic, data);
+                }
+
                 for (TopicCallback::iterator rangeIt = range.first; rangeIt != range.second; ++rangeIt) {
                     rangeIt->second(data);
                 }

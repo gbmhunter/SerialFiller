@@ -68,8 +68,14 @@ namespace mn {
             /// \throws     NoTopicDataSeparator
             void GiveRxData(ByteQueue &rxData);
 
-//            std::function<void(ByteQueue)> txDataReady_;
+            /// \brief      This is called by SerialFiller whenever it has data that is ready
+            ///             to be sent out of the serial port.
             mn::HearYeHearYe::Event<void(ByteQueue)> txDataReady_;
+
+            /// \brief      This event is fired whenever a valid message is received, but
+            ///             there are no subscribers listening to it.
+            mn::HearYeHearYe::Event<void(std::string topic, ByteArray data)> noSubscribersForTopic_;
+
 
         private:
 
