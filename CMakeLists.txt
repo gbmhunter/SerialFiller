@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.8.11)
 project(SerialFiller)
 
+add_definitions(-std=c++11)
+
 option(BUILD_DEPENDENCIES "If set to ON, dependencies will be downloaded and built as part of the build process." ON)
 
 if (BUILD_DEPENDENCIES)
