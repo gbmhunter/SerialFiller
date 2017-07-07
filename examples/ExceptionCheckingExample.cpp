@@ -30,7 +30,7 @@ int main() {
             std::cout << e.what() << std::endl;
         } catch(CrcCheckFailed e) {
             std::cout << e.what() << std::endl;
-        } catch(NoTopicDataSeparator e) {
+        } catch(LengthOfTopicTooLong e) {
             std::cout << e.what() << std::endl;
         }
     });
