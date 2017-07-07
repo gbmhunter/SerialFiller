@@ -101,7 +101,14 @@ namespace mn {
                     break;
                 }
 
-                decodedData.push_back(0x00);
+                // We only add a 0x00 byte to the decoded data
+                // IF the num. of elements in block was less than 254.
+                // If num. elements in block is max (254), then we know that
+                // the block was created due to it reaching maximum size, not because
+                // a 0x00 was found
+                if(numElementsInBlock < 0xFE) {
+                    decodedData.push_back(0x00);
+                }
             }
 
         }

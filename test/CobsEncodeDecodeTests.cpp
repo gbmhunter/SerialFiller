@@ -90,6 +90,10 @@ namespace {
         }
         EXPECT_EQ(0x01, encodedData[255]);
         EXPECT_EQ(0x00, encodedData[256]);
+
+        ByteArray decodedData;
+        CobsTranscoder::Decode(encodedData, decodedData);
+        EXPECT_EQ(rawData, decodedData);
     }
 
     TEST_F(CobsEncodeDecodeTest, MoreThan254Bytes) {
@@ -111,6 +115,10 @@ namespace {
             EXPECT_EQ(0x01, encodedData[i]);
         }
         EXPECT_EQ(0x00, encodedData[262]);
+
+        ByteArray decodedData;
+        CobsTranscoder::Decode(encodedData, decodedData);
+        EXPECT_EQ(rawData, decodedData);
     }
 
 }  // namespace
