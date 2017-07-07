@@ -15,6 +15,7 @@
 namespace mn {
     namespace SerialFiller {
 
+
         void CobsTranscoder::Encode(
                 const ByteArray &rawData,
                 ByteArray &encodedData) {
@@ -46,6 +47,20 @@ namespace mn {
                 } else {
                     encodedData.push_back(*it);
                     numElementsInCurrBlock++;
+
+                    if(numElementsInCurrBlock == 254) {
+
+                        encodedData[startOfCurrBlock] = (uint8_t) (numElementsInCurrBlock + 1);
+
+                        // Add placeholder at start of next block
+                        encodedData.push_back(0x00);
+
+                        startOfCurrBlock = encodedData.size() - 1;
+
+                        // Reset count of num. elements in current block
+                        numElementsInCurrBlock = 0;
+                    }
+
                 }
                 it++;
             }

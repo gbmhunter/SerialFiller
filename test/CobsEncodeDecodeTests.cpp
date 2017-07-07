@@ -7,7 +7,6 @@ using namespace mn::SerialFiller;
 
 namespace {
 
-// The fixture for testing class Foo.
     class CobsEncodeDecodeTest : public ::testing::Test {
     protected:
 
@@ -73,6 +72,45 @@ namespace {
         ByteArray decodedData;
         EXPECT_THROW(CobsTranscoder::Decode(ByteArray({0x02, 0xAA, 0x03, 0x00, 0xAB}), decodedData), CobsDecodingFailed);
         EXPECT_EQ(ByteArray(), decodedData);
+    }
+
+    TEST_F(CobsEncodeDecodeTest, Exactly254Bytes) {
+
+        ByteArray rawData;
+        for(int i = 1; i < 255; i++) {
+            rawData.push_back((char)i);
+        }
+
+        ByteArray encodedData;
+        CobsTranscoder::Encode(rawData, encodedData);
+        EXPECT_EQ(257, encodedData.size());
+        EXPECT_EQ(0xFF, encodedData[0]);
+        for(int i = 1; i < 255; i++) {
+            EXPECT_EQ(i, encodedData[i]);
+        }
+        EXPECT_EQ(0x01, encodedData[255]);
+        EXPECT_EQ(0x00, encodedData[256]);
+    }
+
+    TEST_F(CobsEncodeDecodeTest, MoreThan254Bytes) {
+
+        ByteArray rawData;
+        for(int i = 0; i < 260; i++) {
+            rawData.push_back(0x01);
+        }
+
+        ByteArray encodedData;
+        CobsTranscoder::Encode(rawData, encodedData);
+        EXPECT_EQ(263, encodedData.size());
+        EXPECT_EQ(0xFF, encodedData[0]);
+        for(int i = 1; i < 255; i++) {
+            EXPECT_EQ(0x01, encodedData[i]);
+        }
+        EXPECT_EQ(0x07, encodedData[255]);
+        for(int i = 256; i < 262; i++) {
+            EXPECT_EQ(0x01, encodedData[i]);
+        }
+        EXPECT_EQ(0x00, encodedData[262]);
     }
 
 }  // namespace
