@@ -1,6 +1,10 @@
+
+// 3rd party includes
 #include "gtest/gtest.h"
 
+// User includes
 #include "SerialFiller/SerialFiller.hpp"
+#include "SerialFiller/Exceptions/LengthOfTopicTooLong.hpp"
 
 using namespace mn::SerialFiller;
 
@@ -33,9 +37,10 @@ namespace {
     }
 
     TEST_F(GiveRxDataExceptionTests, NoTopicDataSeparator) {
-        // Don't add ':' between 't' and data! CRC and COBS encoding is correct
-        auto rxData = ByteQueue({ 0x07, 't', 0x01, 0x02, 0x03, 0x6D, 0x75, 0x00 });
-        EXPECT_THROW(serialFiller.GiveRxData(rxData), NoTopicDataSeparator);
+        // Give a bogus long value for topic length (0x74).
+        // CRC and COBS encoding is correct
+        auto rxData = ByteQueue({ 0x07, 0x74, 0x01, 0x02, 0x03, 0x6D, 0x75, 0x00 });
+        EXPECT_THROW(serialFiller.GiveRxData(rxData), LengthOfTopicTooLong);
         EXPECT_TRUE(rxData.empty());
     }
 }  // namespace

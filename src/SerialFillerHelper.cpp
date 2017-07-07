@@ -11,6 +11,7 @@
 // User includes
 #include "SerialFiller/SerialFiller.hpp"
 #include "SerialFiller/Crc16Ccitt1021.hpp"
+#include "SerialFiller/Exceptions/LengthOfTopicTooLong.hpp"
 
 namespace mn {
     namespace SerialFiller {
@@ -85,22 +86,35 @@ namespace mn {
 
             // Find ":", this indicates the end of the topic name and the
             // start of the data
-            bool foundTopicToDataSeparator = false;
-            for (auto it = packet.begin(); it != packet.end(); ++it) {
-                // Look for the first ":"
-                if (*it == ':') {
-                    topic = std::string(packet.begin(), it);
+//            bool foundTopicToDataSeparator = false;
+//            for (auto it = packet.begin(); it != packet.end(); ++it) {
+//                // Look for the first ":"
+//                if (*it == ':') {
+//                    topic = std::string(packet.begin(), it);
+//
+//                    // Data starts after ':' and stops 2 bytes before the
+//                    // end (the 2 CRC bytes)
+//                    data = ByteArray(it + 1, packet.end() - 2);
+//                    foundTopicToDataSeparator = true;
+//                }
+//            }
+//
+//            if (!foundTopicToDataSeparator) {
+//                throw NoTopicDataSeparator(packet);
+//            }
 
-                    // Data starts after ':' and stops 2 bytes before the
-                    // end (the 2 CRC bytes)
-                    data = ByteArray(it + 1, packet.end() - 2);
-                    foundTopicToDataSeparator = true;
-                }
+            // Get length of topic
+            int lengthOfTopic = packet[0];
+
+            ByteArray::size_type availableBytes = packet.size() - 2;
+            // Verify that length of topic is not longer than total length of packet - 2 bytes for CRC
+            if(lengthOfTopic > availableBytes) {
+                throw LengthOfTopicTooLong(packet, lengthOfTopic, availableBytes);
             }
 
-            if (!foundTopicToDataSeparator) {
-                throw NoTopicDataSeparator(packet);
-            }
+            topic = std::string(packet.begin() + 1, packet.begin() + 1 + lengthOfTopic);
+            data = ByteArray(packet.begin() + 1 + lengthOfTopic, packet.end() - 2);
+
         }
     } // namespace SerialFiller
 } // namespace mn

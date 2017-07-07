@@ -35,8 +35,8 @@ namespace mn {
 #include "SerialFiller/SerialFillerHelper.hpp"
 #include "SerialFiller/Exceptions/CobsDecodingFailed.hpp"
 #include "SerialFiller/Exceptions/CrcCheckFailed.hpp"
+#include "SerialFiller/Exceptions/LengthOfTopicTooLong.hpp"
 #include "SerialFiller/Exceptions/NotEnoughBytes.hpp"
-#include "SerialFiller/Exceptions/NoTopicDataSeparator.hpp"
 
 namespace mn {
     namespace SerialFiller {

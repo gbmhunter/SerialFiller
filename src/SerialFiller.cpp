@@ -20,14 +20,19 @@ namespace mn {
         void SerialFiller::Publish(std::string topic, ByteArray data) {
 
             ByteArray packet;
+
+            // 1st byte (pre-COBS encoded) is num. of bytes for topic
+            packet.push_back((unsigned char)topic.size());
+
             std::copy(topic.begin(), topic.end(), std::back_inserter(packet));
 
-            packet.push_back(':');
+//            packet.push_back(':');
             std::copy(data.begin(), data.end(), std::back_inserter(packet));
 
             // Add CRC
             SerialFillerHelper::AddCrc(packet);
 
+            // Encode data using COBS
             ByteArray encodedData;
             CobsTranscoder::Encode(packet, encodedData);
 
