@@ -21,11 +21,10 @@ Like a serial killer, but friendlier. A C++ serial publish/subscribe based commu
 Examples
 ========
 
-**Setup:**
+**Setup:**::
 
-::
-
-   .. code-block:: cpp
+   .. code-block:: d
+      :linenos:
       #include <SerialFiller/SerialFiller.hpp>
 
       mn::SerialFiller serialFiller;
