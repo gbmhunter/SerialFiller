@@ -102,6 +102,6 @@ Once SerialFiller has been built, run:
 Installation Info
 -----------------
 
-On a typical Linux system, the above install commands will install the static library `libSerialFiller.a` into `/usr/local/bin` and the header files into `/usr/local/include/SerialFiller` (a directory is created inside `/usr/local/include` as not to pollute the system folder space).
+On a typical Linux system, the above install commands will install the static library :bash:`libSerialFiller.a` into :bash"`/usr/local/bin` and the header files into :bash:`/usr/local/include/SerialFiller` (a directory is created inside :bash:`/usr/local/include` as not to pollute the system folder space).
 
-This command does not install the unit tests or examples.
+This command does NOT install the unit tests or examples.
