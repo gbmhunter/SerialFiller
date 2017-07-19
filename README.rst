@@ -1,3 +1,9 @@
+.. role:: bash(code)
+    :language: bash
+
+.. role:: cpp(code)
+    :language: cpp
+
 ============
 SerialFiller
 ============
@@ -54,12 +60,30 @@ Examples
         std::cout << std::endl;
     });
 
-See the source code in the `examples` directory for more real-world examples!
+See the source code in the :bash:`examples` directory for more real-world examples!
 
-Building
---------
+Building/Installing
+===================
 
-Clone this repository. Then `cd` into the repo's root directory and run:
+Clone this repository. Then :bash:`cd` into the repo's root directory and do one of the following:
+
+Use The Script
+--------------
+
+To build only:
+
+.. code:: bash
+
+    ~/SerialFiller$ ./tools/build.sh
+
+To build AND install:
+
+.. code:: bash
+
+    ~/SerialFiller$ ./tools/build.sh -i
+
+Manual
+------
 
 .. code:: bash
 
@@ -69,16 +93,15 @@ Clone this repository. Then `cd` into the repo's root directory and run:
     ~/SerialFiller/build$ make
 
 
-Installing
-----------
-
 Once SerialFiller has been built, run:
 
 .. code:: bash
 
     ~/SerialFiller/build$ sudo make install
 
+Installation Info
+-----------------
 
-On a typical Linux system, this will install the static library `libSerialFiller.a` into `/usr/local/bin` and the header files into `/usr/local/include/SerialFiller` (a directory is created inside `/usr/local/include` as not to pollute the system folder space).
+On a typical Linux system, the above install commands will install the static library `libSerialFiller.a` into `/usr/local/bin` and the header files into `/usr/local/include/SerialFiller` (a directory is created inside `/usr/local/include` as not to pollute the system folder space).
 
 This command does not install the unit tests or examples.
