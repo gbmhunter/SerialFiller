@@ -40,10 +40,11 @@ Examples
 
 **Subscribe example:**
 
-````c++
-// Provide a callback for "mytopic" messages using
-// lambda notation.
-serialFiller.Subscribe("mytopic", [](std::vector<uint8_t> rxData) -> void {
+.. code:: cpp
+
+    // Provide a callback for "mytopic" messages using
+    // lambda notation.
+    serialFiller.Subscribe("mytopic", [](std::vector<uint8_t> rxData) -> void {
         std::cout << "Received packet on mytopic!" << std::endl;
         
         std::cout << " Data = ";
@@ -52,7 +53,6 @@ serialFiller.Subscribe("mytopic", [](std::vector<uint8_t> rxData) -> void {
         }
         std::cout << std::endl;
     });
-````
 
 See the source code in the `examples` directory for more real-world examples!
 
@@ -61,21 +61,23 @@ Building
 
 Clone this repository. Then `cd` into the repo's root directory and run:
 
-````bash
-~/SerialFiller$ mkdir build
-~/SerialFiller$ cd build
-~/SerialFiller/build$ cmake ..
-~/SerialFiller/build$ make
-````
+.. code:: bash
+
+    ~/SerialFiller$ mkdir build
+    ~/SerialFiller$ cd build
+    ~/SerialFiller/build$ cmake ..
+    ~/SerialFiller/build$ make
+
 
 Installing
 ----------
 
 Once SerialFiller has been built, run:
 
-````bash
-~/SerialFiller/build$ sudo make install
-````
+.. code:: bash
+
+    ~/SerialFiller/build$ sudo make install
+
 
 On a typical Linux system, this will install the static library `libSerialFiller.a` into `/usr/local/bin` and the header files into `/usr/local/include/SerialFiller` (a directory is created inside `/usr/local/include` as not to pollute the system folder space).
 
