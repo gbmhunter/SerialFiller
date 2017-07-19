@@ -1,7 +1,13 @@
+============
 SerialFiller
 ============
 
+--------------------------------------------------------------------------------------------------
 Like a serial killer, but friendlier. A C++ serial publish/subscribe based communication protocol.
+--------------------------------------------------------------------------------------------------
+
+.. image:: https://travis-ci.org/mbedded-ninja/SerialFiller.png?branch=master
+	:target: https://travis-ci.org/mbedded-ninja/SerialFiller
 
 - Simple publish/subscribe system for sending messages across serial links
 - Ability to send any type of data on a "topic"
@@ -13,22 +19,20 @@ Like a serial killer, but friendlier. A C++ serial publish/subscribe based commu
 - CLion project files provided (use of CLion is optional)
 
 Examples
---------
+========
 
 **Setup:**
 
-````c++
-#include <SerialFiller/SerialFiller.hpp>
+.. code-block:: c++
+    #include <SerialFiller/SerialFiller.hpp>
 
-mn::SerialFiller serialFiller;
-````
+    mn::SerialFiller serialFiller;
 
 **Publish example:**
 
-````c++
-// Publish the data { 0x01, 0x02, 0x03 } on topic "mytopic" 
-serialFiller.Publish("mytopic", { 0x01, 0x02, 0x03 });
-````
+.. code-block:: c++
+    // Publish the data { 0x01, 0x02, 0x03 } on topic "mytopic"
+    serialFiller.Publish("mytopic", { 0x01, 0x02, 0x03 });
 
 **Subscribe example:**
 
