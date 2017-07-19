@@ -23,7 +23,7 @@ Examples
 
 Setup:
 
-.. code-block:: c++
+.. code-block:: cpp
     #include <SerialFiller/SerialFiller.hpp>
 
     mn::SerialFiller serialFiller;
@@ -31,7 +31,7 @@ Setup:
 
 **Publish example:**
 
-.. code-block:: c++
+.. code-block:: cpp
     // Publish the data { 0x01, 0x02, 0x03 } on topic "mytopic"
     serialFiller.Publish("mytopic", { 0x01, 0x02, 0x03 });
 
