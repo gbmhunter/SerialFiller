@@ -8,6 +8,7 @@ file(GLOB_RECURSE serial-filler_HEADERS
         "*.hpp")
 
 add_library(SerialFiller ${serial-filler_SRC} ${serial-filler_HEADERS})
+add_dependencies(SerialFiller HearYeHearYe)
 
 target_include_directories(SerialFiller PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
