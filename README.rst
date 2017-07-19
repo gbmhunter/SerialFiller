@@ -21,7 +21,9 @@ Like a serial killer, but friendlier. A C++ serial publish/subscribe based commu
 Examples
 ========
 
-Setup:
+**Setup:**
+
+::
 
    .. code-block:: cpp
       #include <SerialFiller/SerialFiller.hpp>
@@ -31,7 +33,9 @@ Setup:
 
 **Publish example:**
 
-.. code-block:: cpp
+::
+
+    .. code-block:: cpp
     // Publish the data { 0x01, 0x02, 0x03 } on topic "mytopic"
     serialFiller.Publish("mytopic", { 0x01, 0x02, 0x03 });
 
