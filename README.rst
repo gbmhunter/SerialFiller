@@ -23,8 +23,8 @@ Examples
 
 **Setup:**
 
-.. code:: python
-    
+.. code:: cpp
+
     #include <SerialFiller/SerialFiller.hpp>
 
 
@@ -33,9 +33,8 @@ Examples
 
 **Publish example:**
 
-::
+.. code:: cpp
 
-    .. code-block:: cpp
     // Publish the data { 0x01, 0x02, 0x03 } on topic "mytopic"
     serialFiller.Publish("mytopic", { 0x01, 0x02, 0x03 });
 
