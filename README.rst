@@ -23,10 +23,10 @@ Examples
 
 Setup:
 
-.. code-block:: cpp
-    #include <SerialFiller/SerialFiller.hpp>
+   .. code-block:: cpp
+      #include <SerialFiller/SerialFiller.hpp>
 
-    mn::SerialFiller serialFiller;
+      mn::SerialFiller serialFiller;
 
 
 **Publish example:**
