@@ -23,11 +23,12 @@ Examples
 
 **Setup:**
 
-.. code:: cpp
-      :linenos:
-      #include <SerialFiller/SerialFiller.hpp>
+.. code:: python
+    
+    #include <SerialFiller/SerialFiller.hpp>
 
-      mn::SerialFiller serialFiller;
+
+    mn::SerialFiller serialFiller;
 
 
 **Publish example:**
