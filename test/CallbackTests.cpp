@@ -22,7 +22,7 @@ namespace {
         SerialFiller serialFiller;
 
         ByteQueue savedTxData;
-        serialFiller.txDataReady_.AddListener([&](ByteQueue txData) -> void {
+        serialFiller.txDataReady_ = ([&](ByteQueue txData) -> void {
             savedTxData = txData;
         });
 

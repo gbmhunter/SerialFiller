@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-20
-/// \last-modified		2015-06-20
+/// \last-modified		2017-08-23
 /// \brief 				Contains an example which checks for all types of exceptions thrown.
 /// \details
 ///		See README.md in root dir for more info.
@@ -18,7 +18,7 @@ int main() {
 
     // Connect the I/O together, to make
     // a software "loop-back"
-    serialFiller.txDataReady_.AddListener([&](ByteQueue txData) -> void {
+    serialFiller.txDataReady_ = ([&](ByteQueue txData) -> void {
 
         try {
             serialFiller.GiveRxData(txData);

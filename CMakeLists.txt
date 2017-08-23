@@ -46,25 +46,12 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
 endif ()
 
 #=================================================================================================#
-#========================================= HearYeHearYe ==========================================#
-#=================================================================================================#
-
-if (BUILD_DEPENDENCIES)
-    ExternalProject_Add(HearYeHearYe
-            GIT_REPOSITORY https://github.com/mbedded-ninja/HearYeHearYe
-            GIT_TAG 797b38d69b2f40979f27f589c9e7bfb57e96961f
-            CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-            )
-    include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
-endif ()
-
-#=================================================================================================#
 #========================================= This Project ==========================================#
 #=================================================================================================#
 
 # Now simply link your own targets against gtest, gmock,
 # etc. as appropriate
-include_directories(src/include)
+include_directories(include)
 
 add_subdirectory(src)
 add_subdirectory(test)

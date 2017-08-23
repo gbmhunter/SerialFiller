@@ -3,11 +3,13 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2015-06-20
+/// \last-modified		2017-08-23
 /// \brief 				Contains the SerialFiller class.
 /// \details
 ///		See README.md in root dir for more info.
 
+// System includes
+#include <stdexcept>
 
 // User includes
 #include "SerialFiller/SerialFiller.hpp"
@@ -39,7 +41,10 @@ namespace mn {
             ByteQueue txData(encodedData.begin(), encodedData.end());
 
             // Emit TX send event
-            txDataReady_.Fire(txData);
+            if(txDataReady_)
+                txDataReady_(txData);
+            else
+                throw std::runtime_error(std::string() + __PRETTY_FUNCTION__ + " was called but txDataReady_ function has no valid function object.");
         };
 
 

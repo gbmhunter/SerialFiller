@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2015-06-20
+/// \last-modified		2015-08-23
 /// \brief 				Contains the SerialFiller class.
 /// \details
 ///		See README.md in root dir for more info.
@@ -19,8 +19,6 @@
 #include <queue>
 #include <vector>
 
-#include <HearYeHearYe/Event.hpp>
-
 // Forward declarations
 namespace mn {
     namespace SerialFiller {
@@ -31,6 +29,7 @@ namespace mn {
 }
 
 // User includes
+#include "SerialFiller/Event.hpp"
 #include "SerialFiller/CobsTranscoder.hpp"
 #include "SerialFiller/SerialFillerHelper.hpp"
 #include "SerialFiller/Exceptions/CobsDecodingFailed.hpp"
@@ -70,11 +69,11 @@ namespace mn {
 
             /// \brief      This is called by SerialFiller whenever it has data that is ready
             ///             to be sent out of the serial port.
-            mn::HearYeHearYe::Event<void(ByteQueue)> txDataReady_;
+            std::function<void(ByteQueue)> txDataReady_;
 
             /// \brief      This event is fired whenever a valid message is received, but
             ///             there are no subscribers listening to it.
-            mn::HearYeHearYe::Event<void(std::string topic, ByteArray data)> noSubscribersForTopic_;
+            Event<void(std::string topic, ByteArray data)> noSubscribersForTopic_;
 
 
         private:
