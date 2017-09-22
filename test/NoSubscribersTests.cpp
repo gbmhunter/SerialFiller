@@ -17,6 +17,8 @@ namespace {
             serialFiller.txDataReady_ = ([&](ByteQueue txData) -> void {
                 serialFiller.GiveRxData(txData);
             });
+
+            serialFiller.SetThreadSafetyEnabled(false);
         }
 
         virtual ~NoSubscribersTests() {

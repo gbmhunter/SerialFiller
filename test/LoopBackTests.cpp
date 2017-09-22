@@ -1,3 +1,13 @@
+///
+/// \file 				LoopBackTests.hpp
+/// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
+/// \edited             n/a
+/// \created			2017-06-23
+/// \last-modified		2017-09-21
+/// \brief 				Contains loop-back unit tests for the SerialFiller class.
+/// \details
+///		See README.md in root dir for more info.
+
 #include "gtest/gtest.h"
 
 #include "SerialFiller/SerialFiller.hpp"
@@ -18,6 +28,8 @@ namespace {
             serialFiller.txDataReady_ = ([&](ByteQueue txData) -> void {
                 serialFiller.GiveRxData(txData);
             });
+
+            serialFiller.SetThreadSafetyEnabled(false);
         }
 
         virtual ~LoopBackTests() {

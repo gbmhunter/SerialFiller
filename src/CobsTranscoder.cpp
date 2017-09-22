@@ -74,6 +74,7 @@ namespace mn {
         void CobsTranscoder::Decode(
                 const ByteArray &encodedData,
                 ByteArray &decodedData) {
+            std::cout << "Decode() called with " << std::endl;
 
             decodedData.clear();
 
@@ -110,6 +111,7 @@ namespace mn {
                     decodedData.push_back(0x00);
                 }
             }
+            std::cout << "Decode() finished." << std::endl;
 
         }
     } // namespace SerialFiller

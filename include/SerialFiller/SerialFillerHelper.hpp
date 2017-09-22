@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2017-06-20
+/// \last-modified		2017-09-21
 /// \brief 				Contains the SerialFillerHelper class.
 /// \details
 ///		See README.rst in root dir for more info.
@@ -32,7 +32,7 @@ namespace mn {
         class SerialFillerHelper {
         public:
 
-            static void SplitPacket(const ByteArray &packet, std::string &topic, ByteArray &data);
+            static void SplitPacket(const ByteArray &packet, uint32_t startAt, std::string &topic, ByteArray &data);
 
             /// \details    Moves new RX data into the RX buffer, while looking for the
             ///             end-of-frame character. If EOF is found, packet is populated
