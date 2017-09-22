@@ -162,4 +162,31 @@ namespace {
         EXPECT_EQ(msg2Data, savedMsg2Data);
     }
 
+    TEST_F(TwoNodeAckTests, SubscribeCallsPublish) {
+        auto topic = ByteArray();
+        auto data = ByteArray();
+
+        // Subscribe to a test topic
+        ByteArray savedNode1Data;
+        node1_.serialFiller_.Subscribe("response", [&](ByteArray data) -> void {
+            savedNode1Data = data;
+        });
+
+        ByteArray savedNode2Data;
+        node2_.serialFiller_.Subscribe("request", [&](ByteArray data) -> void {
+            // This should test that the node2 mutex is unlocked before calling any subscribed callbacks
+            // otherwise we would get into deadlock on this call
+            node2_.serialFiller_.Publish("response", { 0x02 });
+            savedNode2Data = data;
+        });
+
+        bool node1GotAck = node1_.serialFiller_.PublishWait("request", { 0x01 }, std::chrono::milliseconds(5000));
+
+        node2_.Join();
+
+        EXPECT_TRUE(node1GotAck);
+        EXPECT_EQ(ByteArray({ 0x02 }), savedNode1Data);
+        EXPECT_EQ(ByteArray({ 0x01 }), savedNode2Data);
+    }
+
 }  // namespace
