@@ -17,6 +17,7 @@ Like a serial killer, but friendlier. A C++ serial publish/subscribe based commu
 
 - Simple publish/subscribe system for sending messages across serial links
 - Ability to send any type of data on a "topic"
+- Optional packet acknowledge functionality with built in thread blocking (using C++11/14 features) on packet send until packet acknowledge is received.
 - COBS encoding for reliable, low-overhead framing of packets
 - CRC16 check for packet integrity (uses CRC16-CCITT, polynomial 0x1021, which does not suffer from the inability to detect '0x00' bytes at the start of the packet)
 - Platform agnostic data I/O (you fill in the hardware abstraction layer by providing a callback for `SerialFiller::txDataReady_` and call `SerialFiller::GiveRxData()` when new RX data is available).

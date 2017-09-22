@@ -21,7 +21,9 @@ namespace mn {
                 ByteQueue &rxDataBuffer,
                 ByteArray &packet) {
 
-            // Clear any existing packets
+//            std::cout << "Move RX data called." << std::endl;
+
+            // Clear any existing data from packet
             packet.clear();
 
             // Pop bytes from front of queue
@@ -36,6 +38,7 @@ namespace mn {
                 // Look for 0x00 byte in data
                 if (byteOfData == 0x00) {
                     // Found end-of-packet!
+                    std::cout << "Found EOP." << std::endl;
 
                     // Move everything from the start to byteOfData from rxData
                     // into a new packet
@@ -45,9 +48,11 @@ namespace mn {
 
                     rxDataBuffer.clear();
 
+//                    std::cout << "Move RX data returning." << std::endl;
                     return;
                 }
             }
+//            std::cout << "Move RX data returning." << std::endl;
         }
 
         void SerialFillerHelper::AddCrc(ByteArray &packet) {
@@ -61,6 +66,9 @@ namespace mn {
         }
 
         bool SerialFillerHelper::VerifyCrc(const ByteArray &packet) {
+
+            if(packet.size() < 3)
+                throw std::runtime_error("Cannot verify CRC with less than 3 bytes in packet.");
 
             // Create a string of the packet without the CRC
             ByteArray packetWithoutCrc(packet.begin(), packet.end() - 2);
@@ -82,38 +90,19 @@ namespace mn {
         }
 
 
-        void SerialFillerHelper::SplitPacket(const ByteArray &packet, std::string &topic, ByteArray &data) {
-
-            // Find ":", this indicates the end of the topic name and the
-            // start of the data
-//            bool foundTopicToDataSeparator = false;
-//            for (auto it = packet.begin(); it != packet.end(); ++it) {
-//                // Look for the first ":"
-//                if (*it == ':') {
-//                    topic = std::string(packet.begin(), it);
-//
-//                    // Data starts after ':' and stops 2 bytes before the
-//                    // end (the 2 CRC bytes)
-//                    data = ByteArray(it + 1, packet.end() - 2);
-//                    foundTopicToDataSeparator = true;
-//                }
-//            }
-//
-//            if (!foundTopicToDataSeparator) {
-//                throw NoTopicDataSeparator(packet);
-//            }
+        void SerialFillerHelper::SplitPacket(const ByteArray &packet, uint32_t startAt, std::string &topic, ByteArray &data) {
 
             // Get length of topic
-            int lengthOfTopic = packet[0];
+            int lengthOfTopic = packet.at(startAt);
 
-            ByteArray::size_type availableBytes = packet.size() - 2;
-            // Verify that length of topic is not longer than total length of packet - 2 bytes for CRC
+            int32_t availableBytes = packet.size() - 2 - startAt;
+            // Verify that length of topic is not longer than total length of packet - 2 bytes for CRC - start position
             if(lengthOfTopic > availableBytes) {
                 throw LengthOfTopicTooLong(packet, lengthOfTopic, availableBytes);
             }
 
-            topic = std::string(packet.begin() + 1, packet.begin() + 1 + lengthOfTopic);
-            data = ByteArray(packet.begin() + 1 + lengthOfTopic, packet.end() - 2);
+            topic = std::string(packet.begin() + 1 + startAt, packet.begin() + 1 + + startAt + lengthOfTopic);
+            data = ByteArray(packet.begin() + 1 + startAt + lengthOfTopic, packet.end() - 2);
 
         }
     } // namespace SerialFiller
