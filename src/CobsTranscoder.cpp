@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2017-06-20
+/// \last-modified		2017-09-22
 /// \brief 				Contains the CobsTranscoder class.
 /// \details
 ///		See README.rst in root dir for more info.
@@ -74,7 +74,6 @@ namespace mn {
         void CobsTranscoder::Decode(
                 const ByteArray &encodedData,
                 ByteArray &decodedData) {
-            std::cout << "Decode() called with " << std::endl;
 
             decodedData.clear();
 
@@ -111,8 +110,6 @@ namespace mn {
                     decodedData.push_back(0x00);
                 }
             }
-            std::cout << "Decode() finished." << std::endl;
-
         }
     } // namespace SerialFiller
 } // namespace mn

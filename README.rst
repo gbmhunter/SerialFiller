@@ -18,9 +18,10 @@ Like a serial killer, but friendlier. A C++ serial publish/subscribe based commu
 - Simple publish/subscribe system for sending messages across serial links
 - Ability to send any type of data on a "topic"
 - Optional packet acknowledge functionality with built in thread blocking (using C++11/14 features) on packet send until packet acknowledge is received.
+- Built-in thread safety (for performance reasons, thread safety can be disabled via :cpp:`SerialFiller::SetThreadSafetyEnabled(false)`)
 - COBS encoding for reliable, low-overhead framing of packets
-- CRC16 check for packet integrity (uses CRC16-CCITT, polynomial 0x1021, which does not suffer from the inability to detect '0x00' bytes at the start of the packet)
-- Platform agnostic data I/O (you fill in the hardware abstraction layer by providing a callback for `SerialFiller::txDataReady_` and call `SerialFiller::GiveRxData()` when new RX data is available).
+- CRC16 check for packet integrity (uses CRC16-CCITT, polynomial 0x1021, which does not suffer from the inability to detect :cpp:`0x00` bytes at the start of the packet)
+- Platform agnostic data I/O (you fill in the hardware abstraction layer by providing a callback for :cpp:`SerialFiller::txDataReady_` and call :cpp:`SerialFiller::GiveRxData()` when new RX data is available).
 - Functionality backed by numerous unit tests
 - CMake based build system
 - CLion project files provided (use of CLion is optional)
@@ -103,6 +104,6 @@ Once SerialFiller has been built, run:
 Installation Info
 -----------------
 
-On a typical Linux system, the above install commands will install the static library :bash:`libSerialFiller.a` into :bash"`/usr/local/bin` and the header files into :bash:`/usr/local/include/SerialFiller` (a directory is created inside :bash:`/usr/local/include` as not to pollute the system folder space).
+On a typical Linux system, the above install commands will install the static library :bash:`libSerialFiller.a` into :bash:`/usr/local/bin` and the header files into :bash:`/usr/local/include/SerialFiller` (a directory is created inside :bash:`/usr/local/include` as not to pollute the system folder space).
 
 This command does NOT install the unit tests or examples.

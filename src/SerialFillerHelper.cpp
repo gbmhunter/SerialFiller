@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2017-06-20
+/// \last-modified		2017-09-22
 /// \brief 				Contains the SerialFillerHelper class.
 /// \details
 ///		See README.rst in root dir for more info.
@@ -28,8 +28,6 @@ namespace mn {
 
             // Pop bytes from front of queue
             while (!newRxData.empty()) {
-
-
                 uint8_t byteOfData = newRxData.front();
                 newRxData.pop_front();
 
@@ -38,7 +36,6 @@ namespace mn {
                 // Look for 0x00 byte in data
                 if (byteOfData == 0x00) {
                     // Found end-of-packet!
-                    std::cout << "Found EOP." << std::endl;
 
                     // Move everything from the start to byteOfData from rxData
                     // into a new packet

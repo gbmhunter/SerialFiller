@@ -60,16 +60,9 @@ namespace {
             savedData = data;
         });
 
-        std::cout << "Trying to lock..." << std::endl;
-        std::unique_lock<std::mutex> lock(node2_.serialFiller_.classMutex_);
-        std::cout << "Lock worked." << std::endl;
-        lock.unlock();
-
-        // Publish data on topic
         auto dataToSend = ByteArray({ 0x01, 0x02, 0x03, 0x04 });
 
-
-
+        // Call PublishWait
         auto gotAck = node1_.serialFiller_.PublishWait("test-topic", dataToSend, std::chrono::milliseconds(1000));
 
         EXPECT_TRUE(gotAck);
