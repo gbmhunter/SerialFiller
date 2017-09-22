@@ -129,11 +129,18 @@ namespace mn {
                     // fire the "no subscribers for topic" event (user can
                     // listen to this)
                     if(range.first == range.second) {
+                        if(threadSafetyEnabled_) lock.unlock();
                         noSubscribersForTopic_.Fire(topic, data);
+                        if(threadSafetyEnabled_) lock.lock();
                     }
 
                     for (TopicCallback::iterator rangeIt = range.first; rangeIt != range.second; ++rangeIt) {
+                        if(threadSafetyEnabled_) lock.unlock();
+//                        std::cout << "Calling listener..." << std::endl;
                         rangeIt->second(data);
+//                        std::cout << "Listener finished, relocking..." << std::endl;
+                        if(threadSafetyEnabled_) lock.lock();
+//                        std::cout << "Relocked." << std::endl;
                     }
 
                     if(ackEnabled_)
@@ -196,6 +203,7 @@ namespace mn {
             } else
                 throw std::runtime_error(std::string() + __PRETTY_FUNCTION__ + " was called but txDataReady_ function has no valid function object.");
 
+//            std::cout << "SendAck() finished." << std::endl;
         }
 
         uint32_t SerialFiller::NumThreadsWaiting() {

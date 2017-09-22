@@ -43,8 +43,14 @@ namespace mn {
             }
 
             ~Node() {
-                breakThread_.store(true);
-                rxThread_.join();
+                Join();
+            }
+
+            void Join() {
+                if(rxThread_.joinable()) {
+                    breakThread_.store(true);
+                    rxThread_.join();
+                }
             }
 
             void RxThreadFn() {
@@ -52,6 +58,7 @@ namespace mn {
 
                 while (true) {
                     // Wait for data to arrive on the queue
+//                    std::cout << "RX thread for " << name_ << " still running..." << std::endl;
                     uint8_t data;
                     if (rxQueue_.TryPop(data, std::chrono::milliseconds(1000))) {
 //                        std::cout << name_ << " received data." << std::endl;
