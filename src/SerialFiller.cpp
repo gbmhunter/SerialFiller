@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2017-08-23
+/// \last-modified		2017-09-22
 /// \brief 				Contains the SerialFiller class.
 /// \details
 ///		See README.md in root dir for more info.
@@ -148,7 +148,7 @@ namespace mn {
                     // Extract packet ID
                     uint16_t packetId = (static_cast<uint16_t>(decodedData.at(1)) << 8) | (static_cast<uint16_t>(decodedData.at(2)) << 0);
 
-                    std::cout << "Looking for packetId = " << packetId << std::endl;
+//                    std::cout << "Looking for packetId = " << packetId << std::endl;
                     auto it = ackEvents_.find(packetId);
                     if(it == ackEvents_.end()) {
 //                        std::cout << "No threads waiting on ACK." << std::endl;
@@ -170,7 +170,7 @@ namespace mn {
         }
 
         void SerialFiller::SendAck(uint16_t packetId) {
-            std::cout << "SendAck() called with packetId = " << packetId << std::endl;
+//            std::cout << "SendAck() called with packetId = " << packetId << std::endl;
 
             ByteArray packet;
 

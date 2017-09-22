@@ -48,13 +48,13 @@ namespace mn {
             }
 
             void RxThreadFn() {
-                std::cout << __FUNCTION__ << "() called for node " << name_ << std::endl;
+//                std::cout << __FUNCTION__ << "() called for " << name_ << std::endl;
 
                 while (true) {
                     // Wait for data to arrive on the queue
                     uint8_t data;
                     if (rxQueue_.TryPop(data, std::chrono::milliseconds(1000))) {
-                        std::cout << name_ << " received data." << std::endl;
+//                        std::cout << name_ << " received data." << std::endl;
                         ByteQueue dataAsQ;
                         dataAsQ.push_back(data);
                         serialFiller_.GiveRxData(dataAsQ);
@@ -66,16 +66,10 @@ namespace mn {
 
             }
 
-
         private:
-
             std::string name_;
             std::thread rxThread_;
-
-
             std::atomic<bool> breakThread_;
-
-
         };
     } // namespace SerialFiller
 } // namespace mn

@@ -91,7 +91,7 @@ namespace mn {
             ///             is received. Must be enabled if PublishWait() is going to be used.
             void SetAckEnabled(bool value);
 
-            /// \brief      Use to enable/disable thread safety. Enabling thread safety makes all SerialFiller API
+            /// \brief      Use to enable/disable thread safety (enabled by default). Enabling thread safety makes all SerialFiller API
             ///             methods take out a lock on enter, and release on exit. PublishWait() releases lock when it blocks (so
             ///             PublishWait() can be called multiple times from different threads).
             void SetThreadSafetyEnabled(bool value);
@@ -107,11 +107,11 @@ namespace mn {
             ///             there are no subscribers listening to it.
             Event<void(std::string topic, ByteArray data)> noSubscribersForTopic_;
 
-            std::mutex classMutex_;
-
 
         private:
 
+            /// \brief      Stores received data until a packet EOF is received, at which point the packet is
+            ///             processed.
             ByteQueue rxBuffer;
 
             typedef std::multimap<std::string, std::function<void(ByteArray)>> TopicCallback;
@@ -123,6 +123,10 @@ namespace mn {
 
             /// \brief      Is true if acknowledge (ACK) functionality is enabled.
             bool ackEnabled_;
+
+            /// \brief      Mutex that provides thread safety for the SerialFiller class.
+            /// \details    Only used if thread safety is enabled via SetThreadSafetyEnabled().
+            std::mutex classMutex_;
 
             bool threadSafetyEnabled_;
 
