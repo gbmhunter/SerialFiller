@@ -122,6 +122,11 @@ namespace mn {
                     //    This will throw if topic length is invalid
                     SerialFillerHelper::SplitPacket(decodedData, 3, topic, data);
 
+                    // WARNING: Make sure to send ack BEFORE invoking topic callbacks, as they may cause other messages
+                    // to be sent, and we always want the ACK to be the first thing sent back to the sender.
+                    if(ackEnabled_)
+                        SendAck(packetId);
+
                     // 5. Call every callback associated with this topic
                     RangeType range = topicCallbacks_.equal_range(topic);
 
@@ -142,9 +147,6 @@ namespace mn {
                         if(threadSafetyEnabled_) lock.lock();
 //                        std::cout << "Relocked." << std::endl;
                     }
-
-                    if(ackEnabled_)
-                        SendAck(packetId);
 
 
                 } else if (packetType == PacketType::ACK) {
