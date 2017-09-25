@@ -78,7 +78,7 @@ namespace mn {
                 lock.lock();
 
             // Save subscription
-            topicCallbacks.insert({topic, callback});
+            topicCallbacks_.insert({topic, callback});
 
         }
 
@@ -92,7 +92,7 @@ namespace mn {
                 lock.lock();
 
             ByteArray packet;
-            while (SerialFillerHelper::MoveRxDataInBuffer(rxData, rxBuffer, packet), !packet.empty()) {
+            while (SerialFillerHelper::MoveRxDataInBuffer(rxData, rxBuffer_, packet), !packet.empty()) {
 
                 std::string topic;
                 ByteArray data;
@@ -123,7 +123,7 @@ namespace mn {
                     SerialFillerHelper::SplitPacket(decodedData, 3, topic, data);
 
                     // 5. Call every callback associated with this topic
-                    RangeType range = topicCallbacks.equal_range(topic);
+                    RangeType range = topicCallbacks_.equal_range(topic);
 
                     // If no subscribers are listening to this topic,
                     // fire the "no subscribers for topic" event (user can
@@ -168,7 +168,7 @@ namespace mn {
                     throw std::runtime_error("Received packet type not recognized.");
                 }
 
-                SerialFillerHelper::MoveRxDataInBuffer(rxData, rxBuffer, packet);
+                SerialFillerHelper::MoveRxDataInBuffer(rxData, rxBuffer_, packet);
             }
         }
 

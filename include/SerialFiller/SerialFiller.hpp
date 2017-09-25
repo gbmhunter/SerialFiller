@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2017-09-21
+/// \last-modified		2017-09-25
 /// \brief 				Contains the SerialFiller class.
 /// \details
 ///		See README.md in root dir for more info.
@@ -16,6 +16,7 @@
 #include <functional>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <queue>
 #include <vector>
 #include <chrono>
@@ -44,7 +45,9 @@ namespace mn {
 
         using EventType = std::pair<std::condition_variable, bool>;
 
-        ///
+        /// \brief      This SerialFiller class represents a single serial node.
+        /// \details
+        /// PACKET STRUCTURE:
         /// Format, pre COBS encoded:
         /// [ <packet type>, <packet type dependent data...> ]
         /// Packet Type: 1 = publish, 2 = ack
@@ -63,6 +66,7 @@ namespace mn {
                 ACK = 0x02
             };
 
+            /// \brief      Basic constructor.
             SerialFiller();
 
             /// \brief      Publishes data on a topic, and then immediately returns. Does not block (see PublishWait()).
@@ -112,11 +116,11 @@ namespace mn {
 
             /// \brief      Stores received data until a packet EOF is received, at which point the packet is
             ///             processed.
-            ByteQueue rxBuffer;
+            ByteQueue rxBuffer_;
 
             typedef std::multimap<std::string, std::function<void(ByteArray)>> TopicCallback;
             typedef std::pair<TopicCallback::iterator, TopicCallback::iterator> RangeType;
-            TopicCallback topicCallbacks;
+            TopicCallback topicCallbacks_;
 
             /// \brief      Stores what the next sent packet ID should be.
             uint16_t nextPacketId_;
@@ -132,6 +136,7 @@ namespace mn {
 
             std::map<uint16_t, std::shared_ptr<EventType>> ackEvents_;
 
+            /// \brief      Internal publish method which does not lock the classMutex_.
             void PublishInternal(const std::string& topic, const ByteArray& data);
 
             /// \brief      Sends an ACK packet.
