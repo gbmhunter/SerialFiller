@@ -94,7 +94,7 @@ namespace mn {
 
 
         void SerialFiller::GiveRxData(ByteQueue &rxData) {
-            LOG((*logger_), DEBUG, std::string() + "Method called with rxData = " + mn::CppUtils::String::ToAscii(rxData));
+            LOG((*logger_), DEBUG, std::string() + "Method called with rxData = " + mn::CppUtils::String::ToHex(rxData));
             std::unique_lock<std::mutex> lock(classMutex_, std::defer_lock);
 
             if(threadSafetyEnabled_) {
@@ -103,9 +103,16 @@ namespace mn {
                 LOG((*logger_), DEBUG, "Mutex locked.");
             }
 
-            ByteArray packet;
-            while (SerialFillerHelper::MoveRxDataInBuffer(rxData, rxBuffer_, packet), !packet.empty()) {
+            LOG((*logger_), DEBUG, "Before extracting packets, rxBuffer_ = " + CppUtils::String::ToHex(rxBuffer_));
+            LOG((*logger_), DEBUG, "Before extracting packets, rxData = " + CppUtils::String::ToHex(rxData));
 
+            ByteArray packet;
+            SerialFillerHelper::MoveRxDataInBuffer(rxData, rxBuffer_, packet);
+            while (!packet.empty()) {
+
+                LOG((*logger_), DEBUG, "Found packet. Data (COBS encoded) = " + CppUtils::String::ToHex(packet));
+                LOG((*logger_), DEBUG, "rxBuffer_ now = " + CppUtils::String::ToHex(rxBuffer_));
+                LOG((*logger_), DEBUG, "rxData now = " + CppUtils::String::ToHex(rxData));
                 std::string topic;
                 ByteArray data;
 
