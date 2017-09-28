@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2017-09-25
+/// \last-modified		2017-09-27
 /// \brief 				Contains the SerialFiller class.
 /// \details
 ///		See README.md in root dir for more info.
@@ -33,6 +33,7 @@ namespace mn {
 // User includes
 #include "SerialFiller/Event.hpp"
 #include "SerialFiller/CobsTranscoder.hpp"
+#include "SerialFiller/Logger.hpp"
 #include "SerialFiller/Semaphore.hpp"
 #include "SerialFiller/SerialFillerHelper.hpp"
 #include "SerialFiller/Exceptions/CobsDecodingFailed.hpp"
@@ -67,7 +68,7 @@ namespace mn {
             };
 
             /// \brief      Basic constructor.
-            SerialFiller();
+            SerialFiller(std::shared_ptr<Logger> logger = nullptr);
 
             /// \brief      Publishes data on a topic, and then immediately returns. Does not block (see PublishWait()).
             /// \throws     std::runtime_error
@@ -76,7 +77,8 @@ namespace mn {
             /// \brief      Publishes data on a topic, and then blocks the calling thread until either an acknowledge
             ///             is received, or a timeout occurs.
             /// \returns    True if an acknowledge was received before the timeout occurred, otherwise false.
-            /// \warning    Ack must enabled via SetAckEnabled() before calling this method.
+            /// \warning    Ack must enabled via SetAckEnabled() before this will block. If ACK is not enabled,
+            ///             this method will return true immediately without waiting.
             bool PublishWait(const std::string &topic, const ByteArray &data, std::chrono::milliseconds timeout);
 
             void Subscribe(std::string topic, std::function<void(ByteArray)> callback);
@@ -113,6 +115,8 @@ namespace mn {
 
 
         private:
+
+            std::shared_ptr<Logger> logger_;
 
             /// \brief      Stores received data until a packet EOF is received, at which point the packet is
             ///             processed.
