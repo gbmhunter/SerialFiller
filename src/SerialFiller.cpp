@@ -12,6 +12,7 @@
 #include <functional>
 #include <stdexcept>
 #include <string>
+#include <SerialFiller/String.hpp>
 
 // User includes
 #include "SerialFiller/SerialFiller.hpp"
@@ -93,11 +94,14 @@ namespace mn {
 
 
         void SerialFiller::GiveRxData(ByteQueue &rxData) {
-            LOG((*logger_), DEBUG, std::string() + "Method called.");
+            LOG((*logger_), DEBUG, std::string() + "Method called with rxData = " + mn::CppUtils::String::ToAscii(rxData));
             std::unique_lock<std::mutex> lock(classMutex_, std::defer_lock);
 
-            if(threadSafetyEnabled_)
+            if(threadSafetyEnabled_) {
+                LOG((*logger_), DEBUG, "Locking mutex...");
                 lock.lock();
+                LOG((*logger_), DEBUG, "Mutex locked.");
+            }
 
             ByteArray packet;
             while (SerialFillerHelper::MoveRxDataInBuffer(rxData, rxBuffer_, packet), !packet.empty()) {
@@ -180,6 +184,7 @@ namespace mn {
 
                 SerialFillerHelper::MoveRxDataInBuffer(rxData, rxBuffer_, packet);
             }
+            LOG((*logger_), DEBUG, std::string() + "Method finished.");
         }
 
         void SerialFiller::SetAckEnabled(bool value) {
