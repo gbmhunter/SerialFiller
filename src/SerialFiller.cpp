@@ -94,7 +94,7 @@ namespace mn {
 
 
         void SerialFiller::GiveRxData(ByteQueue &rxData) {
-            LOG((*logger_), DEBUG, std::string() + "Method called with rxData = " + mn::CppUtils::String::ToHex(rxData));
+            LOG((*logger_), DEBUG, std::string() + "Method called with rxData = " + mn::CppUtils::String::ToAscii(rxData));
             std::unique_lock<std::mutex> lock(classMutex_, std::defer_lock);
 
             if(threadSafetyEnabled_) {
