@@ -31,10 +31,13 @@ namespace mn {
 
         public:
 
+            std::shared_ptr<Logger> logger_;
             SerialFiller serialFiller_;
             mn::CppUtils::ThreadSafeQ<uint8_t> rxQueue_;
 
             Node(std::string name) :
+                    logger_(new Logger("SerialFiller", Logger::Severity::NONE, Logger::Color::CYAN, [](std::string msg) { std::cout << msg << std::endl; })),
+                    serialFiller_(logger_),
                     name_(name),
                     breakThread_(false) {
                 rxThread_ = std::thread(&Node::RxThreadFn, this);

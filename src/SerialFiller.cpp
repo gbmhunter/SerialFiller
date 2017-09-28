@@ -3,13 +3,15 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2017-09-22
+/// \last-modified		2017-09-27
 /// \brief 				Contains the SerialFiller class.
 /// \details
 ///		See README.md in root dir for more info.
 
 // System includes
+#include <functional>
 #include <stdexcept>
+#include <string>
 
 // User includes
 #include "SerialFiller/SerialFiller.hpp"
@@ -19,11 +21,14 @@
 namespace mn {
     namespace SerialFiller {
 
-        SerialFiller::SerialFiller() :
+        SerialFiller::SerialFiller(std::shared_ptr<Logger> logger) :
+                logger_(logger),
                 nextPacketId_(0),
                 ackEnabled_(false),
                 threadSafetyEnabled_(true) {
-            // nothing
+            if(!logger_)
+                // Create "dead" logger
+                logger_ = std::shared_ptr<Logger>(new Logger("", Logger::Severity::NONE, Logger::Color::NONE, std::function<void(std::string)>()));
         }
 
         void SerialFiller::Publish(std::string topic, ByteArray data) {
@@ -38,13 +43,14 @@ namespace mn {
                 const std::string &topic,
                 const ByteArray &data,
                 std::chrono::milliseconds timeout) {
+            LOG((*logger_), DEBUG, std::string() + "Method called.");
 
             std::unique_lock<std::mutex> lock(classMutex_, std::defer_lock);
             if(threadSafetyEnabled_)
                 lock.lock();
 
             if(!ackEnabled_)
-                throw std::runtime_error("PublishWait() called but auto-ACK was not enabled.");
+                LOG((*logger_), WARNING, std::string() + "PublishWait() called but auto-ACK was not enabled.");
 
             // Create cv and bool
             auto event = std::make_shared<EventType>();
@@ -55,37 +61,39 @@ namespace mn {
             // Call the standard publish
             PublishInternal(topic, data);
 
-            bool gotAck = ackEvents_[packetId]->first.wait_for(lock, timeout, [this, packetId]() {
-                auto it = ackEvents_.find(packetId);
-                if(it == ackEvents_.end())
-                    throw std::runtime_error("Could not find entry in map.");
+            bool gotAck;
+            if(ackEnabled_) {
+                gotAck = ackEvents_[packetId]->first.wait_for(lock, timeout, [this, packetId]() {
+                    auto it = ackEvents_.find(packetId);
+                    if (it == ackEvents_.end())
+                        throw std::runtime_error("Could not find entry in map.");
 
-                return it->second->second;
-            });
-//            std::cout << "wait_for() returned gotAck = ." << gotAck << std::endl;
+                    return it->second->second;
+                });
 
-            // Remove event from map
-            ackEvents_.erase(packetId);
-
+                // Remove event from map
+                ackEvents_.erase(packetId);
+            } else {
+                gotAck = true;
+            }
+            LOG((*logger_), DEBUG, "Method returning...");
             return gotAck;
         }
 
 
         void SerialFiller::Subscribe(std::string topic, std::function<void(ByteArray)> callback) {
-//            std::cout << "Subscribe() called." << std::endl;
+            LOG((*logger_), DEBUG, std::string() + "Method called.");
             std::unique_lock<std::mutex> lock(classMutex_, std::defer_lock);
             if(threadSafetyEnabled_)
                 lock.lock();
 
             // Save subscription
             topicCallbacks_.insert({topic, callback});
-
         }
 
 
         void SerialFiller::GiveRxData(ByteQueue &rxData) {
-
-//            std::cout << "GiveRxData() called" << std::endl;
+            LOG((*logger_), DEBUG, std::string() + "Method called.");
             std::unique_lock<std::mutex> lock(classMutex_, std::defer_lock);
 
             if(threadSafetyEnabled_)
@@ -150,7 +158,7 @@ namespace mn {
 
 
                 } else if (packetType == PacketType::ACK) {
-//                    std::cout << "Received ACK packet." << std::endl;
+                    LOG((*logger_), DEBUG, "Received ACK packet.");
                     if(!ackEnabled_)
                         throw std::runtime_error("SerialFiller node received ACK packet but auto-ACK was not enabled.");
 
@@ -179,7 +187,7 @@ namespace mn {
         }
 
         void SerialFiller::SendAck(uint16_t packetId) {
-//            std::cout << "SendAck() called with packetId = " << packetId << std::endl;
+            LOG((*logger_), DEBUG, "Method called with packetId = " + std::to_string(packetId));
 
             ByteArray packet;
 
