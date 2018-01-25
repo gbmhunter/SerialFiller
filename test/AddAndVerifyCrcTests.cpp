@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "SerialFiller/SerialFillerHelper.hpp"
+#include "SerialFiller/Exceptions/CrcCheckFailed.hpp"
 
 using namespace mn::SerialFiller;
 

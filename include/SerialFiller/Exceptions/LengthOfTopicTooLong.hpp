@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-07-07
-/// \last-modified		2017-07-07
+/// \last-modified		2018-01-25
 /// \brief 				Contains the LengthOfTopicTooLong exception.
 /// \details
 ///		See README.rst in root dir for more info.
@@ -12,25 +12,19 @@
 #define MN_SERIAL_FILLER_LENGTH_OF_TOPIC_TOO_LONG_H_
 
 // System includes
+// none
 
-
-// Forward declaration
-namespace mn {
-    namespace SerialFiller {
-        class NoTopicDataSeparator;
-    }
-}
-
-// User includes
+// Local includes
+#include "SerialFiller/Exceptions/SerialFillerException.hpp"
 
 namespace mn {
     namespace SerialFiller {
 
-        class LengthOfTopicTooLong : public std::runtime_error {
+        class LengthOfTopicTooLong : public SerialFillerException {
         public:
 
             LengthOfTopicTooLong(ByteArray packet, uint32_t statedLengthInBytes, ByteArray::size_type availableBytes) :
-                    runtime_error("Stated length of topic was too long. Stated length = " +
+                    SerialFillerException("Stated length of topic was too long. Stated length = " +
                                           std::to_string(statedLengthInBytes) +
                     ", available num. bytes for topic = " + std::to_string(availableBytes) + ".") {
                 packet_ = packet;

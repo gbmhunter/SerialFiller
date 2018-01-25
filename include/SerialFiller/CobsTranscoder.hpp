@@ -1,12 +1,21 @@
+///
+/// \file 				CobsTranscoder.hpp
+/// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
+/// \edited             n/a
+/// \created			2017-06-20
+/// \last-modified		2018-01-25
+/// \brief 				Contains the CobsTranscoder class.
+/// \details
+///		See README.rst in root dir for more info.
 
 #ifndef MN_SERIAL_FILLER_COBS_TRANSCODER_H_
 #define MN_SERIAL_FILLER_COBS_TRANSCODER_H_
 
 // System includes
-#include <string>
+// none
 
-// User includes
-#include "SerialFiller/SerialFiller.hpp"
+// Local includes
+#include "SerialFiller/Definitions.hpp"
 
 namespace mn {
     namespace SerialFiller {

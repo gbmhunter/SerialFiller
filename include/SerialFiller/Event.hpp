@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-08-23
-/// \last-modified		2017-08-23
+/// \last-modified		2018-01-25
 /// \brief 				Contains the Event class.
 /// \details
 ///		See README.md in root dir for more info.

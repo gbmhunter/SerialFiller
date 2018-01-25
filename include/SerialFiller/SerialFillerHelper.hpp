@@ -3,15 +3,13 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2017-09-21
+/// \last-modified		2018-01-25
 /// \brief 				Contains the SerialFillerHelper class.
 /// \details
 ///		See README.rst in root dir for more info.
 
-#ifndef SERIAL_FILLER_SERIAL_FILLER_INTERNAL_H_
-#define SERIAL_FILLER_SERIAL_FILLER_INTERNAL_H_
-
-
+#ifndef MN_SERIAL_FILLER_SERIAL_FILLER_HELPER_H_
+#define MN_SERIAL_FILLER_SERIAL_FILLER_HELPER_H_
 
 // System includes
 #include <cstdint>
@@ -20,10 +18,8 @@
 #include <map>
 #include <vector>
 
-
-#include "SerialFiller/CobsTranscoder.hpp"
-
-
+// Local includes
+#include "SerialFiller/Definitions.hpp"
 
 namespace mn {
     namespace SerialFiller {
@@ -56,4 +52,4 @@ namespace mn {
     }
 }
 
-#endif // #ifndef SERIAL_FILLER_SERIAL_FILLER_H_
+#endif // #ifndef MN_SERIAL_FILLER_SERIAL_FILLER_HELPER_H_

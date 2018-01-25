@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-20
-/// \last-modified		2017-06-20
+/// \last-modified		2018-01-25
 /// \brief 				Contains the Constants class.
 /// \details
 ///		See README.md in root dir for more info.
@@ -13,24 +13,9 @@
 
 // System includes
 #include <cstdint>
-#include <functional>
-#include <iostream>
-#include <map>
-#include <queue>
-#include <vector>
 
-// Forward declarations
-namespace mn {
-    namespace SerialFiller {
-        class Constants;
-    }
-}
-
-// User includes
-#include "SerialFiller/CobsTranscoder.hpp"
-#include "SerialFiller/SerialFillerHelper.hpp"
-#include "SerialFiller/Exceptions/CrcCheckFailed.hpp"
-#include "SerialFiller/Exceptions/NotEnoughBytes.hpp"
+// Local includes
+// none
 
 namespace mn {
     namespace SerialFiller {

@@ -3,8 +3,8 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-20
-/// \last-modified		2017-06-20
-/// \brief 				Contains the CrcCheckFailed class.
+/// \last-modified		2018-01-25
+/// \brief 				Contains the CrcCheckFailed exception.
 /// \details
 ///		See README.rst in root dir for more info.
 
@@ -16,10 +16,13 @@
 #include <iomanip>
 #include <sstream>
 
+// Local includes
+#include "SerialFiller/Exceptions/SerialFillerException.hpp"
+
 namespace mn {
     namespace SerialFiller {
 
-        class CrcCheckFailed : public std::runtime_error {
+        class CrcCheckFailed : public SerialFillerException {
         public:
 
             template<typename T>
@@ -32,7 +35,7 @@ namespace mn {
             }
 
             CrcCheckFailed(uint16_t calculatedCrcVal, uint16_t sentCrcVal) :
-                    runtime_error("CRC check failed. Calculated CRC value = " + IntToHex(calculatedCrcVal) +
+                    SerialFillerException("CRC check failed. Calculated CRC value = " + IntToHex(calculatedCrcVal) +
                                   ", sent CRC value = " + IntToHex(sentCrcVal) + ".") {
                 calculatedCrcVal_ = calculatedCrcVal;
                 sentCrcVal_ = sentCrcVal;
