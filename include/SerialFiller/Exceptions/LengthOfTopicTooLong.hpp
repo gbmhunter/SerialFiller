@@ -12,14 +12,7 @@
 #define MN_SERIAL_FILLER_LENGTH_OF_TOPIC_TOO_LONG_H_
 
 // System includes
-
-
-// Forward declaration
-namespace mn {
-    namespace SerialFiller {
-        class NoTopicDataSeparator;
-    }
-}
+// none
 
 // Local includes
 #include "SerialFiller/Exceptions/SerialFillerException.hpp"

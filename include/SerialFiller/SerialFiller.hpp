@@ -3,13 +3,13 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2017-09-27
+/// \last-modified		2018-01-25
 /// \brief 				Contains the SerialFiller class.
 /// \details
 ///		See README.md in root dir for more info.
 
-#ifndef SERIAL_FILLER_SERIAL_FILLER_H_
-#define SERIAL_FILLER_SERIAL_FILLER_H_
+#ifndef MN_SERIAL_FILLER_SERIAL_FILLER_H_
+#define MN_SERIAL_FILLER_SERIAL_FILLER_H_
 
 // System includes
 #include <cstdint>
@@ -21,16 +21,7 @@
 #include <vector>
 #include <chrono>
 
-// Forward declarations
-namespace mn {
-    namespace SerialFiller {
-        class SerialFiller;
-        using ByteArray = std::vector<uint8_t>;
-        using ByteQueue = std::deque<uint8_t>;
-    }
-}
-
-// User includes
+// Local includes
 #include "SerialFiller/Event.hpp"
 #include "SerialFiller/CobsTranscoder.hpp"
 #include "SerialFiller/Logger.hpp"
@@ -150,4 +141,4 @@ namespace mn {
     } // namespace SerialFiller
 } // namespace mn
 
-#endif // #ifndef SERIAL_FILLER_SERIAL_FILLER_H_
+#endif // #ifndef MN_SERIAL_FILLER_SERIAL_FILLER_H_

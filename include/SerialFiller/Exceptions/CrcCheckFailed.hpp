@@ -4,7 +4,7 @@
 /// \edited             n/a
 /// \created			2017-06-20
 /// \last-modified		2018-01-25
-/// \brief 				Contains the CrcCheckFailed class.
+/// \brief 				Contains the CrcCheckFailed exception.
 /// \details
 ///		See README.rst in root dir for more info.
 

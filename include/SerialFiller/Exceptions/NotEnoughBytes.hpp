@@ -16,14 +16,7 @@
 #include <iomanip>
 #include <sstream>
 
-// Forward declaration
-namespace mn {
-    namespace SerialFiller {
-        class NotEnoughBytes;
-    }
-}
-
-// User includes
+// Local includes
 #include "SerialFiller/Constants.hpp"
 #include "SerialFiller/Exceptions/SerialFillerException.hpp"
 

@@ -16,13 +16,6 @@
 #include <iomanip>
 #include <sstream>
 
-// Forward declaration
-namespace mn {
-    namespace SerialFiller {
-        class CobsDecodingFailed;
-    }
-}
-
 // Local includes
 #include "SerialFiller/Exceptions/SerialFillerException.hpp"
 
