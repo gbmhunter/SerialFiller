@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-20
-/// \last-modified		2017-06-20
+/// \last-modified		2018-01-25
 /// \brief 				Contains the NotEnoughBytes exception.
 /// \details
 ///		See README.rst in root dir for more info.
@@ -25,15 +25,16 @@ namespace mn {
 
 // User includes
 #include "SerialFiller/Constants.hpp"
+#include "SerialFiller/Exceptions/SerialFillerException.hpp"
 
 namespace mn {
     namespace SerialFiller {
 
-        class NotEnoughBytes : public std::runtime_error {
+        class NotEnoughBytes : public SerialFillerException {
         public:
 
             NotEnoughBytes(ByteArray packet) :
-                    runtime_error(
+                    SerialFillerException(
                             "Not enough bytes in packet. Num. of bytes in packet = " + std::to_string(packet.size()) +
                             ". Min num. of byes = " + std::to_string(Constants::minNumBytesPerPacket)) {
                 packet_ = packet;

@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-20
-/// \last-modified		2017-06-20
+/// \last-modified		2018-01-25
 /// \brief 				Contains the CobsDecodingFailed exception.
 /// \details
 ///		See README.rst in root dir for more info.
@@ -23,16 +23,17 @@ namespace mn {
     }
 }
 
-// User includes
+// Local includes
+#include "SerialFiller/Exceptions/SerialFillerException.hpp"
 
 namespace mn {
     namespace SerialFiller {
 
-        class CobsDecodingFailed : public std::runtime_error {
+        class CobsDecodingFailed : public SerialFillerException {
         public:
 
             CobsDecodingFailed(ByteArray packet) :
-                    runtime_error("COBS decoding failed for packet.") {
+                    SerialFillerException("COBS decoding failed for packet.") {
                 packet_ = packet;
             };
 
