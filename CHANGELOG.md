@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [v1.0.0-beta.1] - 2018-01-25
 
 ### Added
-- Added this changelog file.
+- Added this changelog file, closes #8.
+- Added VS Code project files, closes #9.
 - Added a base SerialFillerException class that all serial filler exceptions derive from.
 
 [Unreleased]: https://github.com/mbedded-ninja/CppTemplate/compare/v1.0.0-beta.1...HEAD
