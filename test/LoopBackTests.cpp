@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-23
-/// \last-modified		2017-09-21
+/// \last-modified		2018-01-30
 /// \brief 				Contains loop-back unit tests for the SerialFiller class.
 /// \details
 ///		See README.md in root dir for more info.
@@ -168,6 +168,108 @@ namespace {
         EXPECT_EQ(ByteArray{}, savedNoSubscriberData);
 
 
+    }
+
+    TEST_F(LoopBackTests, UnsubscribeCorrectId) {
+        auto topic = std::string();
+        auto data = ByteArray();
+
+        // Subscribe to some topics (sharing the data object)
+        ByteArray savedData;
+        serialFiller.Subscribe("topic1", [&](ByteArray data) -> void {
+            savedData = data;
+        });
+        auto topic2Id = serialFiller.Subscribe("topic2", [&](ByteArray data) -> void {
+            savedData = data;
+        });
+
+        // Publish data on topic
+        serialFiller.Publish("topic1", { 'h' ,'e', 'l', 'l', 'o'});
+        EXPECT_EQ(ByteArray({ 'h' ,'e', 'l', 'l', 'o'}), savedData);
+        savedData.clear();
+
+        serialFiller.Publish("topic2", { 'w', 'o', 'r', 'l', 'd'});
+        EXPECT_EQ(ByteArray({ 'w', 'o', 'r', 'l', 'd'}), savedData);
+        savedData.clear();
+
+        // Now unsubscribe to topic2
+        serialFiller.Unsubscribe(topic2Id);
+
+        // We should now not get any data when publishing to topic2
+        serialFiller.Publish("topic2", { 'w', 'o', 'r', 'l', 'd'});
+        EXPECT_EQ(ByteArray({}), savedData);
+        savedData.clear();
+    }
+
+    TEST_F(LoopBackTests, UnsubscribeWrongId) {
+        auto topic = std::string();
+        auto data = ByteArray();
+
+        // Subscribe to some topics (sharing the data object)
+        ByteArray savedData;
+        serialFiller.Subscribe("topic1", [&](ByteArray data) -> void {
+            savedData = data;
+        });
+        auto topic2Id = serialFiller.Subscribe("topic2", [&](ByteArray data) -> void {
+            savedData = data;
+        });
+
+        // Attempt to unsubscribe to a ID 1 higher than previously assigned ID
+        EXPECT_THROW(serialFiller.Unsubscribe(topic2Id + 1), SerialFillerException);
+    }
+
+    TEST_F(LoopBackTests, UnsubscribeAll) {
+        auto topic = std::string();
+        auto data = ByteArray();
+
+        // Subscribe to some topics (sharing the data object)
+        ByteArray savedData;
+        serialFiller.Subscribe("topic1", [&](ByteArray data) -> void {
+            savedData = data;
+        });
+        serialFiller.Subscribe("topic2", [&](ByteArray data) -> void {
+            savedData = data;
+        });
+
+        // Publish data on topic (this is before unsubscribing to all)
+        serialFiller.Publish("topic1", { 'h' ,'e', 'l', 'l', 'o'});
+        EXPECT_EQ(ByteArray({ 'h' ,'e', 'l', 'l', 'o'}), savedData);
+        savedData.clear();
+
+        serialFiller.Publish("topic2", { 'w', 'o', 'r', 'l', 'd'});
+        EXPECT_EQ(ByteArray({ 'w', 'o', 'r', 'l', 'd'}), savedData);
+        savedData.clear();
+
+        // Now unsubscribe to all topics
+        serialFiller.UnsubscribeAll();
+
+        // We should now not get any data when publishing to topic 1 or 2
+        serialFiller.Publish("topic1", { 'w', 'o', 'r', 'l', 'd'});
+        EXPECT_EQ(ByteArray({}), savedData);
+        savedData.clear();
+
+        serialFiller.Publish("topic2", { 'w', 'o', 'r', 'l', 'd'});
+        EXPECT_EQ(ByteArray({}), savedData);
+        savedData.clear();
+    }
+
+    TEST_F(LoopBackTests, NoDataTest) {
+        auto topic = ByteArray();
+        auto data = ByteArray();
+
+        // Subscribe to a test topic
+        bool callbackCalled = false;
+        ByteArray savedData;
+        serialFiller.Subscribe("test-topic", [&](ByteArray data) -> void {
+            callbackCalled = true;
+            savedData = data;
+        });
+
+        // Publish on topic, no data
+        serialFiller.Publish("test-topic", {});
+
+        EXPECT_EQ(true, callbackCalled);
+        EXPECT_EQ(ByteArray({}), savedData);
     }
 
 }  // namespace

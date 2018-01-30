@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2018-01-25
+/// \last-modified		2018-01-30
 /// \brief 				Contains the SerialFillerHelper class.
 /// \details
 ///		See README.rst in root dir for more info.

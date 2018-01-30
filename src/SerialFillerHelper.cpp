@@ -3,15 +3,19 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2017-09-22
+/// \last-modified		2018-01-30
 /// \brief 				Contains the SerialFillerHelper class.
 /// \details
 ///		See README.rst in root dir for more info.
 
 // User includes
-#include "SerialFiller/SerialFiller.hpp"
+// #include "SerialFiller/SerialFiller.hpp"
 #include "SerialFiller/Crc16Ccitt1021.hpp"
+#include "SerialFiller/Exceptions/CrcCheckFailed.hpp"
 #include "SerialFiller/Exceptions/LengthOfTopicTooLong.hpp"
+
+// Module include
+#include "SerialFiller/SerialFillerHelper.hpp"
 
 namespace mn {
     namespace SerialFiller {

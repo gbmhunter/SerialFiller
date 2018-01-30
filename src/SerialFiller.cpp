@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2017-09-27
+/// \last-modified		2018-01-30
 /// \brief 				Contains the SerialFiller class.
 /// \details
 ///		See README.md in root dir for more info.
@@ -15,9 +15,13 @@
 #include <SerialFiller/String.hpp>
 
 // User includes
-#include "SerialFiller/SerialFiller.hpp"
+#include "SerialFiller/CobsTranscoder.hpp"
 #include "SerialFiller/Crc16Ccitt1021.hpp"
+#include "SerialFiller/SerialFillerHelper.hpp"
 #include "SerialFiller/Exceptions/NotEnoughBytes.hpp"
+
+// Module include
+#include "SerialFiller/SerialFiller.hpp"
 
 namespace mn {
     namespace SerialFiller {
@@ -26,7 +30,8 @@ namespace mn {
                 logger_(logger),
                 nextPacketId_(0),
                 ackEnabled_(false),
-                threadSafetyEnabled_(true) {
+                threadSafetyEnabled_(true),
+                nextFreeSubsriberId_(0) {
             if(!logger_)
                 // Create "dead" logger
                 logger_ = std::shared_ptr<Logger>(new Logger("", Logger::Severity::NONE, Logger::Color::NONE, std::function<void(std::string)>()));
@@ -82,14 +87,51 @@ namespace mn {
         }
 
 
-        void SerialFiller::Subscribe(std::string topic, std::function<void(ByteArray)> callback) {
+        uint32_t SerialFiller::Subscribe(std::string topic, std::function<void(ByteArray)> callback) {
             LOG((*logger_), DEBUG, std::string() + "Method called.");
             std::unique_lock<std::mutex> lock(classMutex_, std::defer_lock);
             if(threadSafetyEnabled_)
                 lock.lock();
 
+            // Assign ID and update free IDs
+            auto id = nextFreeSubsriberId_;
+            nextFreeSubsriberId_++;
+
             // Save subscription
-            topicCallbacks_.insert({topic, callback});
+            Subscriber subscriber;
+            subscriber.id_ = id;
+            subscriber.callback_ = callback;
+            subscribers_.insert({topic, subscriber});
+
+            
+            return id;
+        }
+
+        void SerialFiller::Unsubscribe(uint32_t subscriberId) {
+
+            std::unique_lock<std::mutex> lock(classMutex_, std::defer_lock);
+            if(threadSafetyEnabled_)
+                lock.lock();
+
+            // Search for subscriber with provided ID
+            for(auto it = subscribers_.begin(); it != subscribers_.end(); ++it) {
+                if((*it).second.id_ == subscriberId) {
+                    subscribers_.erase(it);
+                    return;
+                }
+            }
+
+            // If we reach here, no subscriber was found!
+            throw SerialFillerException(std::string() + __PRETTY_FUNCTION__ + " called but subscriber ID of " + std::to_string(subscriberId) + " was not found.");
+        }
+
+        void SerialFiller::UnsubscribeAll() noexcept {
+
+            std::unique_lock<std::mutex> lock(classMutex_, std::defer_lock);
+            if(threadSafetyEnabled_)
+                lock.lock();
+
+            subscribers_.clear();
         }
 
 
@@ -147,7 +189,7 @@ namespace mn {
                         SendAck(packetId);
 
                     // 5. Call every callback associated with this topic
-                    RangeType range = topicCallbacks_.equal_range(topic);
+                    RangeType range = subscribers_.equal_range(topic);
 
                     // If no subscribers are listening to this topic,
                     // fire the "no subscribers for topic" event (user can
@@ -158,10 +200,10 @@ namespace mn {
                         if(threadSafetyEnabled_) lock.lock();
                     }
 
-                    for (TopicCallback::iterator rangeIt = range.first; rangeIt != range.second; ++rangeIt) {
+                    for (Subscribers::iterator rangeIt = range.first; rangeIt != range.second; ++rangeIt) {
                         if(threadSafetyEnabled_) lock.unlock();
 //                        std::cout << "Calling listener..." << std::endl;
-                        rangeIt->second(data);
+                        rangeIt->second.callback_(data);
 //                        std::cout << "Listener finished, relocking..." << std::endl;
                         if(threadSafetyEnabled_) lock.lock();
 //                        std::cout << "Relocked." << std::endl;
