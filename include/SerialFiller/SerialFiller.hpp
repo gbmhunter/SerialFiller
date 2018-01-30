@@ -3,7 +3,7 @@
 /// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
 /// \edited             n/a
 /// \created			2017-06-10
-/// \last-modified		2018-01-25
+/// \last-modified		2018-01-30
 /// \brief 				Contains the SerialFiller class.
 /// \details
 ///		See README.md in root dir for more info.
@@ -12,6 +12,7 @@
 #define MN_SERIAL_FILLER_SERIAL_FILLER_H_
 
 // System includes
+#include <condition_variable>
 #include <cstdint>
 #include <functional>
 #include <iostream>
@@ -23,10 +24,11 @@
 
 // Local includes
 #include "SerialFiller/Event.hpp"
-#include "SerialFiller/CobsTranscoder.hpp"
+// #include "SerialFiller/CobsTranscoder.hpp"
+#include "SerialFiller/Definitions.hpp"
 #include "SerialFiller/Logger.hpp"
-#include "SerialFiller/Semaphore.hpp"
-#include "SerialFiller/SerialFillerHelper.hpp"
+// #include "SerialFiller/Semaphore.hpp"
+// #include "SerialFiller/SerialFillerHelper.hpp"
 #include "SerialFiller/Exceptions/CobsDecodingFailed.hpp"
 #include "SerialFiller/Exceptions/CrcCheckFailed.hpp"
 #include "SerialFiller/Exceptions/LengthOfTopicTooLong.hpp"
@@ -72,7 +74,17 @@ namespace mn {
             ///             this method will return true immediately without waiting.
             bool PublishWait(const std::string &topic, const ByteArray &data, std::chrono::milliseconds timeout);
 
-            void Subscribe(std::string topic, std::function<void(ByteArray)> callback);
+            /// \brief      Call to subscribe to a particular topic.
+            /// \returns    A unique subscription ID which can be used to delete the subsriber.
+            uint32_t Subscribe(std::string topic, std::function<void(ByteArray)> callback);
+
+            /// \brief      Unsubscribes a subscriber using the provided ID.
+            /// \details    ID is returned from #Subscribe() method.
+            /// \throws     SerialFillerException if subscriber ID is invalid.
+            void Unsubscribe(uint32_t subscriberId);
+
+            /// \brief      Unsubscribes all subscribers.
+            void UnsubscribeAll() noexcept;
 
             /// \brief      Pass in received RX data to SerialFiller.
             /// \details    SerialFiller will add this data to it's internal RX data buffer, and then
@@ -113,9 +125,15 @@ namespace mn {
             ///             processed.
             ByteQueue rxBuffer_;
 
-            typedef std::multimap<std::string, std::function<void(ByteArray)>> TopicCallback;
-            typedef std::pair<TopicCallback::iterator, TopicCallback::iterator> RangeType;
-            TopicCallback topicCallbacks_;
+            class Subscriber {
+                public:
+                    uint32_t id_;
+                    std::function<void(ByteArray)> callback_;
+            };
+
+            typedef std::multimap<std::string, Subscriber> Subscribers;
+            typedef std::pair<Subscribers::iterator, Subscribers::iterator> RangeType;
+            Subscribers subscribers_;
 
             /// \brief      Stores what the next sent packet ID should be.
             uint16_t nextPacketId_;
@@ -130,6 +148,9 @@ namespace mn {
             bool threadSafetyEnabled_;
 
             std::map<uint16_t, std::shared_ptr<EventType>> ackEvents_;
+
+            /// \brief      Holds the value of the next ID that will be assigned when Subscribe() is called.
+            uint32_t nextFreeSubsriberId_;
 
             /// \brief      Internal publish method which does not lock the classMutex_.
             void PublishInternal(const std::string& topic, const ByteArray& data);

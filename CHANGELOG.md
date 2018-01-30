@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [v1.0.0] - 2018-01-30
+
+### Added
+- Added 'Unsubscribe(subscriberId)' and 'UnsubscribeAll()' methods to the 'SerialFiller' class, closes #12.
+- Added test to make sure a 'Publish()' with no data works correctly, closes #3.
+
 ## [v1.0.0-beta.1] - 2018-01-25
 
 ### Added

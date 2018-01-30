@@ -1,6 +1,17 @@
-#include "gtest/gtest.h"
+///
+/// \file 				PacketizeTests.cpp
+/// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
+/// \edited             n/a
+/// \created			2017-06-10
+/// \last-modified		2018-01-30
+/// \brief 				Contains the unit tests for the SerialFillerHelper class.
+/// \details
+///		See README.md in root dir for more info.
 
+// 3rd party includes
+#include "gtest/gtest.h"
 #include "SerialFiller/SerialFiller.hpp"
+#include "SerialFiller/SerialFillerHelper.hpp"
 
 using namespace mn::SerialFiller;
 

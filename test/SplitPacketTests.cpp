@@ -1,6 +1,16 @@
-#include "gtest/gtest.h"
+///
+/// \file 				SplitPacketTests.cpp
+/// \author 			Geoffrey Hunter <gbmhunter@gmail.com> (www.mbedded.ninja)
+/// \edited             n/a
+/// \created			2017-06-10
+/// \last-modified		2018-01-30
+/// \brief 				Contains the unit tests for splitting packets.
+/// \details
+///		See README.md in root dir for more info.
 
+#include "gtest/gtest.h"
 #include "SerialFiller/SerialFiller.hpp"
+#include "SerialFiller/SerialFillerHelper.hpp"
 
 using namespace mn::SerialFiller;
 
