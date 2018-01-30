@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [v1.0.1] - 2018-01-30
+
+## Fixed
+- Fixed missing version number link in changelog.
+
 ## [v1.0.0] - 2018-01-30
 
 ### Added
@@ -24,5 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Tidied up header includes and improved the method of forward declaration, closes #11.
 
-[Unreleased]: https://github.com/mbedded-ninja/CppTemplate/compare/v1.0.0-beta.1...HEAD
+[Unreleased]: https://github.com/mbedded-ninja/CppTemplate/compare/v1.0.1...HEAD
+[v1.0.1]: https://github.com/mbedded-ninja/CppTemplate/compare/v1.0.0...v1.0.1
+[v1.0.0]: https://github.com/mbedded-ninja/CppTemplate/compare/v1.0.0-beta.1...v1.0.0
 [v1.0.0-beta.1]: https://github.com/mbedded-ninja/CppTemplate/compare/v0.3.7...v1.0.0-beta.1
